@@ -1,0 +1,9 @@
+{
+  "name": "esequiel378-skills",
+  "skills": [
+    "./skills/architecture-review",
+    "./skills/grill-me",
+    "./skills/hexagonal-architecture",
+    "./skills/tdd"
+  ]
+}
