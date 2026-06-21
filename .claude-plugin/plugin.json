@@ -4,6 +4,7 @@
     "./skills/architecture-review",
     "./skills/grill-me",
     "./skills/hexagonal-architecture",
+    "./skills/improve-prompt",
     "./skills/tdd"
   ]
 }
