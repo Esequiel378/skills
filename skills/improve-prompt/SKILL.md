@@ -34,13 +34,15 @@ Take a raw, ugly prompt, rewrite it into a sharp one **in the context of this pr
    Why: <one line — what was vague and what you pinned down>
    ```
 
-5. **Log it.** Append one JSON line to `runs.jsonl` in this skill's own directory
-   (create the file if missing) using the Bash tool:
+5. **Log it.** Append one JSON line to `~/.claude/improve-prompt/runs.jsonl`
+   (create the dir/file if missing) using the Bash tool:
    ```bash
+   mkdir -p ~/.claude/improve-prompt
    printf '%s\n' '{"date":"YYYY-MM-DD","raw":"...","improved":"...","note":"..."}' \
-     >> "<this-skill-dir>/runs.jsonl"
+     >> ~/.claude/improve-prompt/runs.jsonl
    ```
-   This feeds the weekly review — see [weekly-review.md](weekly-review.md).
+   The log lives outside the repo (uncommitted) and feeds the review — see
+   [review.md](review.md).
 
 6. **Execute** the improved prompt — proceed to actually do the work, following
    any other applicable skills.
@@ -56,6 +58,6 @@ Take a raw, ugly prompt, rewrite it into a sharp one **in the context of this pr
 
 ## Getting better over time
 
-Every run is logged to `runs.jsonl`. A weekly review reads that log, judges
-which rewrites helped, and proposes edits to this very file. Setup +
-instructions: [weekly-review.md](weekly-review.md).
+Every run is logged to `~/.claude/improve-prompt/runs.jsonl`. Run a review
+whenever you see fit — it reads that log, judges which rewrites helped, and
+proposes edits to this very file. Instructions: [review.md](review.md).
