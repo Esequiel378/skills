@@ -12,6 +12,7 @@ Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.
 | [`grill-me`](./skills/grill-me/SKILL.md) | Stress-tests a plan or design by interrogating decisions branch-by-branch before implementation. |
 | [`hexagonal-architecture`](./skills/hexagonal-architecture/SKILL.md) | Authoring/reviewing Go or Python service code in ports-and-adapters style — use cases, driven ports, driving adapters, stage-fit and promotion decisions. |
 | [`improve-prompt`](./skills/improve-prompt/SKILL.md) | Rewrites a raw, vague prompt into a sharp one grounded in the current project, shows the rewrite, then executes it. Logs every run; a weekly review tunes the skill over time. |
+| [`pr-description`](./skills/pr-description/SKILL.md) | Writes PR descriptions that explain *why* the change exists and where a reviewer should look — grounded in the diff, log, and linked ticket — instead of a per-file changelog that restates the diff. Fires on "create/open a PR" or "push for review". |
 | [`tdd`](./skills/tdd/SKILL.md) | Test-driven development with the red-green-refactor loop. |
 | [`user-story`](./skills/user-story/SKILL.md) | Turns a rough ticket idea into a great, INVEST-complete user story in the team's house format — slices big asks into independently-shippable vertical slices, then offers to create it in the connected tracker. |
 
