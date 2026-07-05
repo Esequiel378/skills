@@ -5,6 +5,10 @@
     "./skills/grill-me",
     "./skills/hexagonal-architecture",
     "./skills/improve-prompt",
-    "./skills/tdd"
+    "./skills/improve-prompt-review",
+    "./skills/orchestrate",
+    "./skills/pr-description",
+    "./skills/tdd",
+    "./skills/user-story"
   ]
 }
