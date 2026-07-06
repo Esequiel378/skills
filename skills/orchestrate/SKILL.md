@@ -41,6 +41,10 @@ Then flag blockers as a single batched question set and **block until answered**
 - Unknowns in scope, acceptance criteria, or affected surfaces.
 - Missing anchors — a path/endpoint/key the ticket assumes but you can't verify.
 - Branch: are we on a fresh branch off `main`? If on `main`, create one first.
+  Prefer an isolated **git worktree** when the environment supports it (run the
+  `superpowers:using-git-worktrees` skill) — it keeps the ticket's work off the
+  current workspace. Fall back to a plain fresh branch if worktrees aren't
+  available.
 
 Do not proceed to stage 1 until the ticket is user-story-complete and every
 question is answered.
