@@ -44,8 +44,8 @@ Take a raw, ugly prompt, rewrite it into a sharp one **in the context of this pr
    The log lives outside the repo (uncommitted) and feeds the review — see
    [review.md](review.md).
 
-6. **Execute** the improved prompt — proceed to actually do the work, following
-   any other applicable skills.
+6. **Execute** the improved prompt — actually do the work. Run any other skill
+   that applies.
 
 ## Guardrails
 

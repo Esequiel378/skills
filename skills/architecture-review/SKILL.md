@@ -9,7 +9,7 @@ Produce a principal-architect review of an architecture document. Blunt, precise
 
 ## Required inputs
 
-The review is shaped by project context. If the user did not provide all six, ask once before reviewing — do not assume.
+The review is shaped by project context. If the user did not provide all seven, ask once before reviewing. Do not assume.
 
 - **Doc path** (the file to review)
 - **Stage** — POC / early production / scaling

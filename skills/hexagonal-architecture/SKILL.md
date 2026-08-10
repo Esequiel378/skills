@@ -9,7 +9,7 @@ Port-based design for Go and Python services. The full reference is `reference.m
 
 ## Always do this first
 
-**Load `reference.md` before writing or reviewing code.** Do not work from this SKILL.md alone — it omits the running example, the layer-by-layer rules, the testing patterns, the operational concerns, and the running example in §10. The inline content below is triage only.
+**Read `reference.md` before you write or review code.** Do not work from this SKILL.md alone — it omits the layer-by-layer rules, the testing patterns, the operational concerns, and the running example in §10. The inline content below is triage only.
 
 ## The two rules that decide most calls
 

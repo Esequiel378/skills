@@ -2,7 +2,7 @@
 
 My personal [Claude Code](https://claude.com/claude-code) agent skills, centralized in one repo so they're version-controlled, shareable, and edited in one place.
 
-Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.md` (plus any supporting files the skill needs).
+Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.md` (plus any supporting files the skill needs). Procedural sections follow [`STYLE.md`](./STYLE.md).
 
 ## Skills
 

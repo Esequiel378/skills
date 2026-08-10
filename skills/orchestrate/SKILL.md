@@ -32,26 +32,26 @@ criteria, real anchors).
 
 - **Ticket URL / existing ticket** → read it. If it's already user-story-shaped
   with clear acceptance criteria, proceed. If it's thin (no criteria, vague
-  scope), run **user-story** to sharpen it and confirm with the user before
-  continuing.
-- **Just an idea, no ticket** → run **user-story** to draft one, get the user's
-  approval, and (if they want) create it in the tracker. No ticket, no start.
+  scope), run **user-story** to sharpen it. Block on the user's confirmation
+  before continuing.
+- **Just an idea, no ticket** → run **user-story** to draft one. Block on the
+  user's approval. If they want it tracked, create it in the tracker. No ticket,
+  no start.
 
 Then flag blockers as a single batched question set and **block until answered**:
 - Unknowns in scope, acceptance criteria, or affected surfaces.
 - Missing anchors — a path/endpoint/key the ticket assumes but you can't verify.
-- Branch: are we on a fresh branch off `main`? If on `main`, create one first.
-  Prefer an isolated **git worktree** when the environment supports it (run the
-  `superpowers:using-git-worktrees` skill) — it keeps the ticket's work off the
-  current workspace. Fall back to a plain fresh branch if worktrees aren't
-  available.
+- Branch: confirm we are on a fresh branch off `main`. If on `main`, create one
+  first. If the environment supports worktrees, run
+  `superpowers:using-git-worktrees` to keep the ticket's work off the current
+  workspace. Otherwise create a plain fresh branch.
 
 Do not proceed to stage 1 until the ticket is user-story-complete and every
 question is answered.
 
 ### 1. Implement — TDD
 
-Drive the ticket through [tdd](../tdd/SKILL.md): red-green-refactor, one acceptance
+Run [tdd](../tdd/SKILL.md) on the ticket: red-green-refactor, one acceptance
 criterion at a time. Don't skip the failing-test-first step.
 
 ### 2. Review — three lenses, in parallel
@@ -64,29 +64,29 @@ per lens, all reading the same working diff (`git diff main...HEAD`):
   stdlib/native.
 - `security-review` — vulnerabilities in the pending changes.
 
-Collect all findings before acting on any — a ponytail "delete this" and a
-code-review "fix this" can target the same code; reconcile them together.
+Collect all findings before you act on any. A ponytail "delete this" and a
+code-review "fix this" can target the same code. Reconcile them together.
 
 ### 3. Loop — fix, re-review, until clean
 
-Address the findings (auto-fix), then **re-run the three reviews on the updated
+Address the findings (auto-fix). Then **re-run the three reviews on the updated
 diff**. Repeat until all three come back with nothing material. Each round:
-- Fix, keeping tests green (re-run the suite).
+- Fix the findings. Re-run the suite and keep the tests green.
 - Re-review in parallel.
-- Stop when clean, or when a finding is a genuine judgment call the user should
-  make — pause and ask rather than loop forever on a subjective point.
+- Stop when clean. Stop also when a finding is a genuine judgment call the user
+  should make — ask rather than loop forever on a subjective point.
 
 Guardrail against thrash: if a finding survives two fix attempts, stop fixing it
 and surface it to the user instead of oscillating.
 
 ### 4. PR — describe and stage, then confirm
 
-Write the PR body via [pr-description](../pr-description/SKILL.md) — the *why*, the
-approach, the review guide, risk/rollout. `Closes <TICKET>`.
+Run [pr-description](../pr-description/SKILL.md) to write the PR body — the *why*,
+the approach, the review guide, risk/rollout. `Closes <TICKET>`.
 
-Then **prepare, don't auto-push**: ensure the branch is committed, show the user
-the final PR description and the exact `gh pr create` command that would open it.
-Hand off there. The user opens it. Honor the repo's git attribution rules — no
+Then **prepare, don't auto-push**. Commit the branch. Show the user the final PR
+description. Show the exact `gh pr create` command that would open it. Hand off
+there. The user opens it. Honor the repo's git attribution rules — no
 self-attribution in commits, PR title, or body.
 
 ## End state

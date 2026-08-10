@@ -15,6 +15,12 @@ Reproducible analysis + improvement pass for the [improve-prompt](../improve-pro
    ```
    Note the `since last review` count, the expansion ratio (creeping >2.5x = over-expansion), and skim the recent notes for a repeated weakness.
 
-2. **Review & tune.** Follow [../improve-prompt/review.md](../improve-prompt/review.md) exactly — sample raw→improved pairs, find the most common weakness, propose **one** targeted edit to `improve-prompt/SKILL.md`, apply it, append the `## Reviewed up to <date>` marker, commit `improve-prompt: tune`.
+2. **Review & tune.** Read [../improve-prompt/review.md](../improve-prompt/review.md) and follow it exactly:
+   - Sample raw→improved pairs.
+   - Find the most common weakness.
+   - Propose **one** targeted edit to `improve-prompt/SKILL.md`.
+   - Apply it.
+   - Append the `## Reviewed up to <date>` marker.
+   - Commit as `improve-prompt: tune`.
 
 If stats and notes show nothing wrong, append the marker and change nothing. One good improvement per session beats a redesign.

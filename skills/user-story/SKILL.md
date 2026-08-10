@@ -46,12 +46,12 @@ later slices widen it. Feature-flag the incomplete UI rather than holding the PR
 
 1. **Read the ask.** Take everything the user gave. Don't ask for what you can infer.
 
-2. **Find anchors (if a repo is present).** If run inside the relevant codebase,
-   grep/read for the real files, endpoints, and keys the story touches and cite them.
-   Not in the repo? Ask the user for the anchors or leave a clearly-marked
+2. **Find anchors (if a repo is present).** Inside the relevant codebase, grep and
+   read for the real files, endpoints, and keys the story touches. Name them in the
+   draft. Outside it, ask the user for the anchors, or leave a clearly-marked
    `TODO(anchor)`. **Never guess a path or API** — a wrong anchor is worse than none.
-   Fire a `context_research` call in parallel if institutional context (prior PRs,
-   decisions, related tickets) would sharpen the story.
+   If institutional context (prior PRs, decisions, related tickets) would sharpen the
+   story, dispatch a `context_research` call in parallel.
 
 3. **Ask only the essentials you can't infer** — one message, batched. Usually:
    who's the user / what's the value, and any acceptance edge cases that aren't
@@ -61,13 +61,13 @@ later slices widen it. Feature-flag the incomplete UI rather than holding the PR
    If splitting, present the ordered slices with a one-line rationale each before
    drafting them in full.
 
-5. **Draft** in the template below. Match the team's house wording if you've seen
-   their existing tickets (headings, label conventions); otherwise use this.
+5. **Draft** in the template below. If you have seen the team's existing tickets,
+   match their house wording (headings, label conventions). Otherwise use this one.
 
 6. **Offer to create it.** Detect the connected tracker (look for an Atlassian /
-   Jira, Linear, or GitHub MCP tool). Show the draft, ask which tracker + project,
-   and **confirm before writing**. If no tracker is connected, just hand over the
-   text. Never auto-create without a yes.
+   Jira, Linear, or GitHub MCP tool). Show the draft. Ask which tracker and project.
+   **Block on that answer before writing anything.** If no tracker is connected, hand
+   over the text instead. Never auto-create without a yes.
 
 ## Template
 
