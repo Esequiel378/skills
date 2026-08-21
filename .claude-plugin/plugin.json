@@ -1,19 +1,19 @@
 {
   "name": "esequiel378-skills",
   "skills": [
-    "./skills/address-pr-comments",
+    "./skills/architecture-hexagonal",
     "./skills/architecture-review",
-    "./skills/az-review",
-    "./skills/grill-me",
-    "./skills/hexagonal-architecture",
-    "./skills/improve-prompt",
-    "./skills/improve-prompt-review",
-    "./skills/orchestrate",
-    "./skills/po-review",
-    "./skills/pr-description",
+    "./skills/plan-grill",
+    "./skills/pr-comments-address",
+    "./skills/pr-describe",
+    "./skills/pr-orchestrate",
     "./skills/pr-review",
-    "./skills/sl-review",
-    "./skills/tdd",
-    "./skills/user-story"
+    "./skills/pr-review-az",
+    "./skills/pr-review-po",
+    "./skills/pr-review-sl",
+    "./skills/prompt-improve",
+    "./skills/prompt-improve-review",
+    "./skills/story-write",
+    "./skills/tdd"
   ]
 }

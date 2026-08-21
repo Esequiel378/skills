@@ -1,4 +1,4 @@
-# sl-review — verbatim style anchors
+# pr-review-sl — verbatim style anchors
 
 Style anchors drawn from real production monorepo reviews, with domain specifics
 genericised. Match this register exactly. Note: across 200 recent PRs, zero

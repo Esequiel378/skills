@@ -8,19 +8,20 @@ Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.
 
 | Skill | What it does |
 | --- | --- |
-| [`address-pr-comments`](./skills/address-pr-comments/SKILL.md) | Triages a PR's unresolved review comments — accept / descope / move (stack-aware) / reject with evidence — cross-validates contested ones with `pr-review`, fixes accepted ones in the working tree. Never commits, pushes, or replies. |
+| [`architecture-hexagonal`](./skills/architecture-hexagonal/SKILL.md) | Authoring/reviewing Go or Python service code in ports-and-adapters style — use cases, driven ports, driving adapters, stage-fit and promotion decisions. |
 | [`architecture-review`](./skills/architecture-review/SKILL.md) | Blunt principal-architect review of an architecture doc / RFC — severity-tagged findings across 7 dimensions and a stage-fit verdict. |
-| [`az-review`](./skills/az-review/SKILL.md) | Craft-and-correctness review lens — type-system lies, error values over exceptions, naming/comment hygiene, schema back-compat — each finding taught with the rule behind it. Approves with follow-up tickets instead of blocking. |
-| [`grill-me`](./skills/grill-me/SKILL.md) | Stress-tests a plan or design by interrogating decisions branch-by-branch before implementation. |
-| [`hexagonal-architecture`](./skills/hexagonal-architecture/SKILL.md) | Authoring/reviewing Go or Python service code in ports-and-adapters style — use cases, driven ports, driving adapters, stage-fit and promotion decisions. |
-| [`improve-prompt`](./skills/improve-prompt/SKILL.md) | Rewrites a raw, vague prompt into a sharp one grounded in the current project, shows the rewrite, then executes it. Logs every run; a weekly review tunes the skill over time. |
-| [`orchestrate`](./skills/orchestrate/SKILL.md) | Sequences the other skills into one gated pipeline — ticket to review-ready PR: gates on a user-story ticket, drives TDD, runs `pr-review` in fix mode until clean, then prepares the PR. |
-| [`po-review`](./skills/po-review/SKILL.md) | Review lens that hunts silent failure modes, tests that prove nothing, type lies, and drift risks. Cites evidence, hedges honestly, keeps blockers rare and explicit. |
-| [`pr-description`](./skills/pr-description/SKILL.md) | Writes PR descriptions that explain *why* the change exists and where a reviewer should look — grounded in the diff, log, and linked ticket — instead of a per-file changelog that restates the diff. Fires on "create/open a PR" or "push for review". |
-| [`pr-review`](./skills/pr-review/SKILL.md) | Fans out six review lenses in parallel over one diff — `code-review` ∥ `ponytail-review` ∥ `security-review` ∥ `po-review` ∥ `sl-review` ∥ `az-review` — then reconciles them into a single ranked list. Reports by default; fixes only when asked. |
-| [`sl-review`](./skills/sl-review/SKILL.md) | Terse staff-architect review lens — interrogates the design rather than the syntax: wrong layer, wrong name, wrong schema, scope creep. Socratic, minimum words. |
+| [`plan-grill`](./skills/plan-grill/SKILL.md) | Stress-tests a plan or design by interrogating decisions branch-by-branch before implementation. |
+| [`pr-comments-address`](./skills/pr-comments-address/SKILL.md) | Triages a PR's unresolved review comments — accept / descope / move (stack-aware) / reject with evidence — cross-validates contested ones with `pr-review`, fixes accepted ones in the working tree. Never commits, pushes, or replies. |
+| [`pr-describe`](./skills/pr-describe/SKILL.md) | Writes PR descriptions that explain *why* the change exists and where a reviewer should look — grounded in the diff, log, and linked ticket — instead of a per-file changelog that restates the diff. Fires on "create/open a PR" or "push for review". |
+| [`pr-orchestrate`](./skills/pr-orchestrate/SKILL.md) | Sequences the other skills into one gated pipeline — ticket to review-ready PR: gates on a user-story ticket, drives TDD, runs `pr-review` in fix mode until clean, then prepares the PR. |
+| [`pr-review`](./skills/pr-review/SKILL.md) | Fans out six review lenses in parallel over one diff — `code-review` ∥ `ponytail-review` ∥ `security-review` ∥ `pr-review-po` ∥ `pr-review-sl` ∥ `pr-review-az` — then reconciles them into a single ranked list. Reports by default; fixes only when asked. |
+| [`pr-review-az`](./skills/pr-review-az/SKILL.md) | Craft-and-correctness review lens — type-system lies, error values over exceptions, naming/comment hygiene, schema back-compat — each finding taught with the rule behind it. Approves with follow-up tickets instead of blocking. |
+| [`pr-review-po`](./skills/pr-review-po/SKILL.md) | Review lens that hunts silent failure modes, tests that prove nothing, type lies, and drift risks. Cites evidence, hedges honestly, keeps blockers rare and explicit. |
+| [`pr-review-sl`](./skills/pr-review-sl/SKILL.md) | Terse staff-architect review lens — interrogates the design rather than the syntax: wrong layer, wrong name, wrong schema, scope creep. Socratic, minimum words. |
+| [`prompt-improve`](./skills/prompt-improve/SKILL.md) | Rewrites a raw, vague prompt into a sharp one grounded in the current project, shows the rewrite, then executes it. Logs every run; a periodic review tunes the skill over time. |
+| [`prompt-improve-review`](./skills/prompt-improve-review/SKILL.md) | Analyzes the `prompt-improve` run log, judges which rewrites helped, and proposes one targeted edit to that skill. |
+| [`story-write`](./skills/story-write/SKILL.md) | Turns a rough ticket idea into a great, INVEST-complete user story in the team's house format — slices big asks into independently-shippable vertical slices, then offers to create it in the connected tracker. |
 | [`tdd`](./skills/tdd/SKILL.md) | Test-driven development with the red-green-refactor loop. |
-| [`user-story`](./skills/user-story/SKILL.md) | Turns a rough ticket idea into a great, INVEST-complete user story in the team's house format — slices big asks into independently-shippable vertical slices, then offers to create it in the connected tracker. |
 
 ## Install
 
@@ -29,8 +30,10 @@ Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.
 Symlinks each skill into `~/.claude/skills/`, so the local Claude CLI picks them up and editing a skill here is instantly live:
 
 ```bash
-./scripts/link-skills.sh
+make install          # or: ./scripts/link-skills.sh
 ```
+
+Safe to re-run. It also prunes symlinks left behind by renamed or deleted skills, and migrates any `~/.claude/` data directory whose skill was renamed — so pulling and running `make install` is all another machine needs.
 
 ### As a Claude Code plugin
 

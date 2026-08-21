@@ -1,9 +1,9 @@
 ---
-name: po-review
-description: Use when the user asks for a PR or diff review in the "po" style — "po review", "/po-review", "review this like po" — a failure-mode-and-evidence pass that hunts silent breakage and tests that don't prove anything.
+name: pr-review-po
+description: Use when the user asks for a PR or diff review in the "po" style — "po review", "/pr-review-po", "review this like po" — a failure-mode-and-evidence pass that hunts silent breakage and tests that don't prove anything.
 ---
 
-# po-review
+# pr-review-po
 
 A review lens that hunts silent failure modes and tests that don't prove anything, cites evidence, hedges honestly, and keeps blockers rare and explicit.
 

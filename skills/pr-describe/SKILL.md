@@ -1,5 +1,5 @@
 ---
-name: pr-description
+name: pr-describe
 description: Use when creating, opening, or writing a pull request, pushing a branch for review, or running `gh pr create` — any time a PR description or summary is about to be written. Produces a description that explains why the change exists and what a reviewer should focus on, instead of a per-file changelog that restates the diff.
 ---
 
@@ -10,7 +10,7 @@ re-lists the files is wasted space — the reviewer can read the diff. Your job 
 everything the diff *can't* show: **why this change exists, why it's built this
 way, and where a reviewer should look hardest.**
 
-Closely related to [user-story](../user-story/SKILL.md): the story says why the
+Closely related to [story-write](../story-write/SKILL.md): the story says why the
 work matters *before* it's built; the PR says why the code is *right* now that it
 is. If a story/ticket exists, pull its "so that" straight into the Why.
 

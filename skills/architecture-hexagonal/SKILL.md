@@ -1,5 +1,5 @@
 ---
-name: hexagonal-architecture
+name: architecture-hexagonal
 description: Use when authoring, reviewing, or designing Go or Python service code that follows ports-and-adapters / hexagonal architecture — features with use cases, driven ports (repositories, gateways), driving adapters (HTTP, CLI, queue consumers), or anything calling itself "ports", "adapters", "use case", or "application service". Also triggers on stage-fit questions ("is this over-engineered for a POC?"), promotion decisions (introducing a Clock port, in-memory fakes, contract tests, per-feature sqlc, UnitOfWork), and PRs that touch repository/adapter naming, dependency direction, or cross-feature transactions.
 ---
 

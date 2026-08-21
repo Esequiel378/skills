@@ -1,17 +1,17 @@
 ---
-name: orchestrate
-description: Use when the user wants to take a ticket all the way to a review-ready PR in one shot — triggers on "/orchestrate", "orchestrate this", "ticket to PR", "run the full workflow", or handing over a ticket/issue URL and asking for the finished PR. Gates on a user-story-shaped ticket, drives TDD, runs pr-review until clean, then prepares the PR.
+name: pr-orchestrate
+description: Use when the user wants to take a ticket all the way to a review-ready PR in one shot — triggers on "/pr-orchestrate", "orchestrate this", "ticket to PR", "run the full workflow", or handing over a ticket/issue URL and asking for the finished PR. Gates on a user-story-shaped ticket, drives TDD, runs pr-review until clean, then prepares the PR.
 ---
 
-# Orchestrate
+# PR Orchestrate
 
 One command from a ticket to a PR the user can review. This skill doesn't do the
 work itself — it *sequences* the repo's other skills into a gated pipeline. The
 end state is a described PR, staged and ready, waiting only on the user's
 go-ahead to open.
 
-Chains: [user-story](../user-story/SKILL.md) → [tdd](../tdd/SKILL.md) →
-[pr-review](../pr-review/SKILL.md) → [pr-description](../pr-description/SKILL.md).
+Chains: [story-write](../story-write/SKILL.md) → [tdd](../tdd/SKILL.md) →
+[pr-review](../pr-review/SKILL.md) → [pr-describe](../pr-describe/SKILL.md).
 
 ## The one rule: no blind starts
 
@@ -26,14 +26,14 @@ made fluent is still wrong.
 ### 0. Gate — resolve the ticket, or refuse
 
 The input must resolve to a ticket that follows the
-[user-story](../user-story/SKILL.md) structure (INVEST, testable acceptance
+[story-write](../story-write/SKILL.md) structure (INVEST, testable acceptance
 criteria, real anchors).
 
 - **Ticket URL / existing ticket** → read it. If it's already user-story-shaped
   with clear acceptance criteria, proceed. If it's thin (no criteria, vague
-  scope), run **user-story** to sharpen it. Block on the user's confirmation
+  scope), run **story-write** to sharpen it. Block on the user's confirmation
   before continuing.
-- **Just an idea, no ticket** → run **user-story** to draft one. Block on the
+- **Just an idea, no ticket** → run **story-write** to draft one. Block on the
   user's approval. If they want it tracked, create it in the tracker. No ticket,
   no start.
 
@@ -70,7 +70,7 @@ judgment call — pause and ask rather than looping on a subjective point.
 
 ### 4. PR — describe and stage, then confirm
 
-Run [pr-description](../pr-description/SKILL.md) to write the PR body — the *why*,
+Run [pr-describe](../pr-describe/SKILL.md) to write the PR body — the *why*,
 the approach, the review guide, risk/rollout. `Closes <TICKET>`.
 
 Then **prepare, don't auto-push**. Commit the branch. Show the user the final PR

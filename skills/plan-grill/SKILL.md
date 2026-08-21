@@ -1,5 +1,5 @@
 ---
-name: grill-me
+name: plan-grill
 description: Use when the user wants to stress-test a plan or design, asks to be grilled, says "grill me", or needs decisions interrogated branch-by-branch before implementation.
 ---
 

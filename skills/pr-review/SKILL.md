@@ -10,8 +10,8 @@ it *fans out* the repo's review skills in parallel over the same diff, then
 reconciles what comes back into a single verdict the user can act on.
 
 Fans out: `code-review` ∥ `ponytail:ponytail-review` ∥ `security-review` ∥
-[po-review](../po-review/SKILL.md) ∥ [sl-review](../sl-review/SKILL.md) ∥
-[az-review](../az-review/SKILL.md).
+[pr-review-po](../pr-review-po/SKILL.md) ∥ [pr-review-sl](../pr-review-sl/SKILL.md) ∥
+[pr-review-az](../pr-review-az/SKILL.md).
 
 ## 0. Resolve the target, and read it
 
@@ -44,16 +44,16 @@ to run wide.
 | `code-review` | correctness, bugs, reuse, simplification |
 | `ponytail:ponytail-review` | over-engineering — what to delete or replace with stdlib/native |
 | `security-review` | vulnerabilities in the pending changes |
-| `po-review` | silent failure modes, tests that prove nothing, type lies, drift |
-| `sl-review` | wrong layer, wrong name, wrong schema, scope creep |
-| `az-review` | type-system lies, undefined smuggling, exceptions as control flow, comment/naming hygiene, schema back-compat |
+| `pr-review-po` | silent failure modes, tests that prove nothing, type lies, drift |
+| `pr-review-sl` | wrong layer, wrong name, wrong schema, scope creep |
+| `pr-review-az` | type-system lies, undefined smuggling, exceptions as control flow, comment/naming hygiene, schema back-compat |
 
 The last three are not stylistic garnish — they cover classes the mechanical
 lenses systematically miss. `code-review` will pass a test suite that asserts a
-throw no client can observe; `po-review` is the lens that catches it. `code-review`
-will pass a correct function living in the wrong package; `sl-review` catches
+throw no client can observe; `pr-review-po` is the lens that catches it. `code-review`
+will pass a correct function living in the wrong package; `pr-review-sl` catches
 that. `code-review` will pass an event rename that breaks every already-persisted
-event; `az-review` catches that.
+event; `pr-review-az` catches that.
 
 **Collect everything before acting on any of it.** A ponytail "delete this" and a
 code-review "fix this" routinely target the same lines.

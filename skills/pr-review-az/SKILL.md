@@ -1,9 +1,9 @@
 ---
-name: az-review
-description: Use when the user asks for a PR or diff review in the "az" style — "az review", "/az-review", "review this like az" — a high-volume craft-and-correctness pass on type integrity, error handling, and naming that teaches the rule behind every finding.
+name: pr-review-az
+description: Use when the user asks for a PR or diff review in the "az" style — "az review", "/pr-review-az", "review this like az" — a high-volume craft-and-correctness pass on type integrity, error handling, and naming that teaches the rule behind every finding.
 ---
 
-# az-review
+# pr-review-az
 
 A craft-and-correctness mentor lens. The highest-volume of the persona reviews:
 dozens of precise inline comments per PR, each teaching the principle behind the

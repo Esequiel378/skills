@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Quantitative view over the improve-prompt run log. The qualitative judgment
+# Quantitative view over the prompt-improve run log. The qualitative judgment
 # (which rewrites actually helped) is the reviewer's job — see review.md.
 set -euo pipefail
 
-LOG="${IMPROVE_PROMPT_LOG:-$HOME/.claude/improve-prompt/runs.jsonl}"
+LOG="${IMPROVE_PROMPT_LOG:-$HOME/.claude/prompt-improve/runs.jsonl}"
 REVIEW="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/review.md"
 
 [ -f "$LOG" ] || { echo "no log at $LOG"; exit 0; }

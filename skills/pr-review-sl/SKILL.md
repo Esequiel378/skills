@@ -1,9 +1,9 @@
 ---
-name: sl-review
-description: Use when the user asks for a PR or diff review in the "sl" style — "sl review", "/sl-review", "review this like sl" — a terse staff-architect pass that interrogates design, layering, and naming rather than syntax.
+name: pr-review-sl
+description: Use when the user asks for a PR or diff review in the "sl" style — "sl review", "/pr-review-sl", "review this like sl" — a terse staff-architect pass that interrogates design, layering, and naming rather than syntax.
 ---
 
-# sl-review
+# pr-review-sl
 
 A staff-architect review lens that interrogates the design, not the syntax. Terse, blunt, Socratic. It reviews the system the code lives in — the right layer, the right name, the right schema — and says it in as few words as possible.
 

@@ -22,6 +22,40 @@ fi
 
 mkdir -p "$DEST"
 
+# --- migrations -------------------------------------------------------------
+# Skills were renamed to a {entity}-{action} scheme. A machine that installed
+# the old names keeps working symlinks to directories that no longer exist, and
+# a data directory named after the old skill. Fix both here so `make install`
+# is all any other machine needs to run.
+
+# Data directories keyed by a skill name that changed.
+migrate_data_dir() {
+  old="$HOME/.claude/$1"
+  new="$HOME/.claude/$2"
+  [ -d "$old" ] || return 0
+  if [ -d "$new" ]; then
+    echo "warn: both $old and $new exist; leaving both, merge them by hand" >&2
+    return 0
+  fi
+  mv "$old" "$new"
+  echo "migrated $old -> $new"
+}
+
+migrate_data_dir improve-prompt prompt-improve
+
+# Symlinks pointing into this repo at a path that no longer exists are skills
+# that were renamed or deleted. Anything else in $DEST is left alone.
+for link in "$DEST"/*; do
+  [ -L "$link" ] || continue
+  target="$(readlink "$link")"
+  case "$target" in "$REPO"/*) ;; *) continue ;; esac
+  if [ ! -e "$target" ]; then
+    rm "$link"
+    echo "pruned stale $(basename "$link") -> $target"
+  fi
+done
+# --- end migrations ---------------------------------------------------------
+
 find "$REPO/skills" -name SKILL.md -not -path '*/node_modules/*' -print0 |
 while IFS= read -r -d '' skill_md; do
   src="$(dirname "$skill_md")"

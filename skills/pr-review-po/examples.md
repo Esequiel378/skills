@@ -1,4 +1,4 @@
-# po-review — verbatim style anchors
+# pr-review-po — verbatim style anchors
 
 Style anchors drawn from real production monorepo reviews, with domain specifics
 genericised. Match this register exactly.

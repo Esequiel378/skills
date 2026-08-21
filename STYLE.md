@@ -14,10 +14,10 @@ checklists, guardrails — anything the agent executes.
 **Descriptive** text (rationale, "what good looks like", worked examples) is
 exempt. Vivid phrasing there is steering signal, not noise. Keep it.
 
-Good: `Run user-story to sharpen it. Block on the user's confirmation before
+Good: `Run story-write to sharpen it. Block on the user's confirmation before
 continuing.`
 
-Bad: `Write the PR body via pr-description, then ensure the branch is committed
+Bad: `Write the PR body via pr-describe, then ensure the branch is committed
 and show the user the command that would open it.`
 
 ## Rules
@@ -34,6 +34,24 @@ and show the user the command that would open it.`
 Explicitly **not** adopted from STE: the approved-vocabulary dictionary, the
 `-ing` ban, the ban on metaphor. They serve a human reader in a second language,
 which is not the reader here.
+
+## Skill names
+
+`{entity}-{action}`, optionally `-{variant}`. The entity comes first so related
+skills share a prefix and sort together: `pr-review`, `pr-review-po`,
+`pr-describe`, `pr-comments-address`. The action is a bare verb — *review*,
+*describe*, *address*, *improve*, *write* — never a noun (`pr-describe`, not
+`pr-description`).
+
+The directory name, the `name:` frontmatter field, and the slash command are the
+same string. A skill named after an established methodology (`tdd`) keeps that
+name; there is no entity to put in front of it.
+
+Renaming a skill breaks four things beyond the directory: the `name:`
+frontmatter, any `"/old-name"` trigger in a `description:`, cross-reference
+links in other skills, and `.claude-plugin/plugin.json`. If the skill owns a
+data directory under `~/.claude/`, add a `migrate_data_dir` line to
+`scripts/link-skills.sh` so other machines fix themselves on `make install`.
 
 ## Verb glossary
 

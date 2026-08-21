@@ -1,6 +1,6 @@
 ---
-name: address-pr-comments
-description: Use when the user wants a PR's review comments handled — triggers on "/address-pr-comments", "address the review comments", "handle the reviewer feedback", "apply the review suggestions", or pointing at a PR with unresolved comments and asking to deal with them. Output is local working-tree changes plus a per-comment verdict report — never commits, pushes, or replies.
+name: pr-comments-address
+description: Use when the user wants a PR's review comments handled — triggers on "/pr-comments-address", "address the review comments", "handle the reviewer feedback", "apply the review suggestions", or pointing at a PR with unresolved comments and asking to deal with them. Output is local working-tree changes plus a per-comment verdict report — never commits, pushes, or replies.
 ---
 
 # Address PR Comments
