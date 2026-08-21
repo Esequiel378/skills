@@ -1,13 +1,18 @@
 {
   "name": "esequiel378-skills",
   "skills": [
+    "./skills/address-pr-comments",
     "./skills/architecture-review",
+    "./skills/az-review",
     "./skills/grill-me",
     "./skills/hexagonal-architecture",
     "./skills/improve-prompt",
     "./skills/improve-prompt-review",
     "./skills/orchestrate",
+    "./skills/po-review",
     "./skills/pr-description",
+    "./skills/pr-review",
+    "./skills/sl-review",
     "./skills/tdd",
     "./skills/user-story"
   ]
