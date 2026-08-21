@@ -69,15 +69,19 @@ question resurfacing, not a fix. Stop and ask.
 Exit this stage when pr-review reports nothing material, or when it surfaces a
 judgment call — pause and ask rather than looping on a subjective point.
 
-### 4. PR — describe and stage, then confirm
+### 4. PR — commit, describe, then stage
 
 Run [commit-write](../commit-write/SKILL.md) for the commit messages and the PR
-title. Run [pr-describe](../pr-describe/SKILL.md) for the PR body.
+title. Commit the branch.
 
-Then **prepare, don't auto-push**. Commit the branch. Show the user the PR title
-and body. Show the exact `gh pr create` command that would open it. Hand off
-there. The user opens it. Honor the repo's git attribution rules — no
-self-attribution in commits, PR title, or body.
+Then run [pr-describe](../pr-describe/SKILL.md) for the PR body. If it concludes
+the change needs no body, accept that. An empty body on self-evident work is the
+house norm, not a gap to fill.
+
+Then **prepare, don't auto-push**. Show the user the PR title and body. Show the
+exact `gh pr create` command that would open it. Hand off there. The user opens
+it. Honor the repo's git attribution rules — no self-attribution in commits, PR
+title, or body.
 
 ## End state
 
