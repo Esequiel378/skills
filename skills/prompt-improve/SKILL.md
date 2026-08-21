@@ -25,6 +25,9 @@ Take a raw, ugly prompt, rewrite it into a sharp one **in the context of this pr
    - **Constraints & success criteria** — how we'll know it's done.
 
    Cut filler. Preserve the user's actual intent — improve it, don't redirect it.
+   The rewrite is text an agent executes — apply [STYLE.md](../../STYLE.md)'s
+   procedural rules (one instruction per sentence, condition before
+   instruction) instead of one dense semicolon-chained paragraph.
 
 4. **Show it.** Print exactly:
    ```

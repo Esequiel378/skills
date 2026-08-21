@@ -32,3 +32,5 @@ it's never committed). Run this review manually — no schedule.
 ## Review log
 
 <!-- reviews append their markers below -->
+
+## Reviewed up to 2026-08-21 — rewrites read as dense semicolon-chained paragraphs; added a STYLE.md procedural-format requirement to Step 3 since the rewrite is agent-executed text
