@@ -10,16 +10,16 @@ re-lists the files is wasted space — the reviewer can read the diff. Your job 
 everything the diff *can't* show: **why this change exists, why it's built this
 way, and where a reviewer should look hardest.**
 
-Closely related to [story-write](../story-write/SKILL.md): the story says why the
+Closely related to [story-write](../story-write/SKILL.md): the ticket says why the
 work matters *before* it's built; the PR says why the code is *right* now that it
-is. If a story/ticket exists, pull its "so that" straight into the Why.
+is. If a ticket exists, pull its "so that" straight into the Why.
 
 ## Ground it first — never invent the why
 
 Motivation you make up is worse than none. Recover it from real signal:
 
 - `git diff main...HEAD` and `git log main..HEAD` — what actually changed and the
-  commit story.
+  commit narrative.
 - The linked issue/ticket and the branch name — the original problem.
 - If the *why* still isn't recoverable, **ask the user one question** ("what
   problem does this solve?") rather than fabricate a plausible-sounding reason.
@@ -27,7 +27,7 @@ Motivation you make up is worse than none. Recover it from real signal:
 ## The body IS these four parts, in this order
 
 1. **Why** — the problem or goal. What was broken, missing, or slow; who felt it;
-   link the issue/story. One or two sentences. This is the part reviewers and
+   link the ticket. One or two sentences. This is the part reviewers and
    future archaeologists actually need.
 2. **Approach & why this way** — how you solved it, in prose, and why *this* way
    over the obvious alternative (the trade-off you made). Not a file list.
@@ -46,7 +46,7 @@ a reviewer would care about it, not as a changelog entry.
 
 ```markdown
 ## Why
-<the problem/goal; link the issue or story>
+<the problem/goal; link the ticket>
 
 ## Approach
 <how, and why this way over the alternative>

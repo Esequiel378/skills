@@ -1,6 +1,6 @@
 ---
 name: pr-orchestrate
-description: Use when the user wants to take a ticket all the way to a review-ready PR in one shot — triggers on "/pr-orchestrate", "orchestrate this", "ticket to PR", "run the full workflow", or handing over a ticket/issue URL and asking for the finished PR. Gates on a user-story-shaped ticket, drives TDD, runs pr-review until clean, then prepares the PR.
+description: Use when the user wants to take a ticket all the way to a review-ready PR in one shot — triggers on "/pr-orchestrate", "orchestrate this", "ticket to PR", "run the full workflow", or handing over a ticket/issue URL and asking for the finished PR. Gates on an INVEST-complete ticket, drives TDD, runs pr-review until clean, then prepares the PR.
 ---
 
 # PR Orchestrate
@@ -29,7 +29,7 @@ The input must resolve to a ticket that follows the
 [story-write](../story-write/SKILL.md) structure (INVEST, testable acceptance
 criteria, real anchors).
 
-- **Ticket URL / existing ticket** → read it. If it's already user-story-shaped
+- **Ticket URL / existing ticket** → read it. If it's already INVEST-complete
   with clear acceptance criteria, proceed. If it's thin (no criteria, vague
   scope), run **story-write** to sharpen it. Block on the user's confirmation
   before continuing.
@@ -45,7 +45,7 @@ Then flag blockers as a single batched question set and **block until answered**
   `superpowers:using-git-worktrees` to keep the ticket's work off the current
   workspace. Otherwise create a plain fresh branch.
 
-Do not proceed to stage 1 until the ticket is user-story-complete and every
+Do not proceed to stage 1 until the ticket is INVEST-complete and every
 question is answered.
 
 ### 1. Implement — TDD

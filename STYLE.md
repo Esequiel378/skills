@@ -67,3 +67,15 @@ data directory under `~/.claude/`, add a `migrate_data_dir` line to
 
 Not: *fire*, *drive through*, *chain*, *load* (for skills), *follow ... exactly*
 (for files — that's **read**).
+
+## Noun glossary
+
+| Noun | Means |
+| --- | --- |
+| **ticket** | The unit of tracked work, in any tracker |
+| **diff** | The change under review |
+| **finding** | One defect or objection a review produces |
+
+A tracked work item is a **ticket** — never a *story*, *user story*, or *issue*.
+`story-write` keeps *User story* and *Technical story* only where they name the
+two ticket **types**; everywhere else the noun is *ticket*.

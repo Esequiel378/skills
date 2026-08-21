@@ -1,25 +1,25 @@
 ---
 name: story-write
-description: Use when the user wants to turn a rough ticket idea into a great user story — triggers on "/story-write", "write a story for", "help me write this ticket", "make this ticket better", "split this into stories", or any half-formed task headed for Jira/Linear/GitHub Issues. Drafts in the team's house format, slices big asks into independently-shippable vertical slices, then offers to create the ticket in whatever tracker is connected.
+description: Use when the user wants to turn a rough idea into a great ticket — triggers on "/story-write", "write a story for", "help me write this ticket", "make this ticket better", "split this into stories", or any half-formed task headed for Jira/Linear/GitHub Issues. Drafts in the team's house format, slices big asks into independently-shippable vertical slices, then offers to create the ticket in whatever tracker is connected.
 ---
 
-# User Story
+# Write a Ticket
 
-Turn a rough idea into a great story — one that a teammate could pick up cold and
+Turn a rough idea into a great ticket — one that a teammate could pick up cold and
 ship as a single mergeable PR. Tracker-agnostic: draft as plain text, then offer
 to create it wherever the user tracks work (Jira, Linear, GitHub Issues, …).
 
 ## What "great" means
 
-A great story is **INVEST**: Independent, Negotiable, Valuable, Estimable, Small,
+A great ticket is **INVEST**: Independent, Negotiable, Valuable, Estimable, Small,
 Testable. In practice that means it has four things:
 
 1. **The right type.** Not every ticket is "As a user…".
    - **User story** — user-facing capability or goal. Use the narrative form.
    - **Technical story** — refactor, tech debt, infra, test coverage, migration.
      A persona narrative is a lie here; state *what changes + why + scope* instead.
-2. **Value that's obvious.** Why does this matter, to whom? A story with no "so
-   that" is a task, not a story.
+2. **Value that's obvious.** Why does this matter, to whom? A ticket with no "so
+   that" is a chore, not a unit of value.
 3. **Acceptance criteria that are testable.** Each bullet is something you can
    demonstrably check off. "Works well" is not criteria; "returns 404 when the
    record is soft-deleted" is.
@@ -47,17 +47,17 @@ later slices widen it. Feature-flag the incomplete UI rather than holding the PR
 1. **Read the ask.** Take everything the user gave. Don't ask for what you can infer.
 
 2. **Find anchors (if a repo is present).** Inside the relevant codebase, grep and
-   read for the real files, endpoints, and keys the story touches. Name them in the
+   read for the real files, endpoints, and keys the ticket touches. Name them in the
    draft. Outside it, ask the user for the anchors, or leave a clearly-marked
    `TODO(anchor)`. **Never guess a path or API** — a wrong anchor is worse than none.
    If institutional context (prior PRs, decisions, related tickets) would sharpen the
-   story, dispatch a `context_research` call in parallel.
+   ticket, dispatch a `context_research` call in parallel.
 
 3. **Ask only the essentials you can't infer** — one message, batched. Usually:
    who's the user / what's the value, and any acceptance edge cases that aren't
    obvious. If it's already clear, skip this.
 
-4. **Decide: one story or a slice set?** Apply the vertical-slicing test above.
+4. **Decide: one ticket or a slice set?** Apply the vertical-slicing test above.
    If splitting, present the ordered slices with a one-line rationale each before
    drafting them in full.
 
@@ -83,7 +83,7 @@ As a <specific role>, I want <capability> so that <value>.
 - <non-functional bar if it matters: perf, permission, audit>
 
 ### Scope
-In:  <what this story delivers>
+In:  <what this ticket delivers>
 Out: <what it deliberately does NOT — link the follow-up slice>
 
 ### Anchors
@@ -107,8 +107,8 @@ Title: <e.g. "Migrate avatar reads off the v1 endpoint">
 
 ## Guardrails
 
-- A story you can't write acceptance criteria for is under-specified — say so and
+- A ticket you can't write acceptance criteria for is under-specified — say so and
   ask, don't paper over it with vague bullets.
-- Don't gold-plate. The smallest story that's INVEST-complete beats an exhaustive one.
-- If the "story" is really an epic (many slices, weeks of work), say so and propose
+- Don't gold-plate. The smallest ticket that's INVEST-complete beats an exhaustive one.
+- If the ticket is really an epic (many slices, weeks of work), say so and propose
   the slice breakdown rather than one giant ticket.
