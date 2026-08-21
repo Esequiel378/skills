@@ -19,7 +19,7 @@ feat: build fax fetch blob URLs from configured azure host and request params
 ```
 fix: useWasm false for PDFs with wasm-dependent images (#8273)
 fix: move api class out of managed<Vendor>OutboundClient to allow reuse (#9585)
-fix: brrr ctx - eng-6276 (#9624)
+fix: allowed redirects (#8261)
 fix: memory leak in www due to nodejs (#9323)
 fix: use 303 for login client cross-domain redirect
 ```
@@ -87,28 +87,35 @@ fix: Revert "prefactor: <vendor> brrr task stub" (#9705)
 revert: revert: feat(py): filename access with test
 ```
 
-## Scope
+## Scope — the ticket, when there is one
 
-The scope names the code — the literal directory, package, or tool:
-
-```
-(py)  (py-stores)  (cdktf)  (nix)  (lib-agent)  (brrr-agent)
-(inspector)  (factoid)  (openapi)  (merge)  (sops)
-```
-
-Omit it when the change spans several components, or when the summary already
-names the component. `refactor(py): artifact store ...` scopes by package;
-`feat: serve /.well-known/jwks from <vendor> app` needs no scope because the
-summary already says where.
-
-## Ticket on the PR title
-
-Appended after the summary, lowercase — not in the scope slot, and not in
-parentheses, which would collide with GitHub's `(#NNNN)`:
+Lowercase, in the scope slot:
 
 ```
-fix: brrr ctx - eng-6276
+feat(eng-5610): wire upload_fax_result_document_v1 (#8444)
+feat(eng-5531): onco add recency gate (#8258)
+chore(eng-5280): delete onco extract patient info (#7780)
+feat(eng-5429): generate pdf stem v1 (#8540)
+feat(eng-5619): update onco note template
 ```
+
+## Scope — the app or package, when there is no ticket
+
+Casing follows the product's own:
+
+```
+feat(inspector): make event table collapsable (#7309)
+feat(GuidingCare): react stem app
+feat(<vendor>): react stem app (#9111)
+chore(openapi): fix up openapi schemas (#8430)
+refactor(py): artifact store and event store from per request actions extra
+prefactor(py-stores): cleanup meta wrapper and nano timestamp (#9550)
+build(nix): jq system in scope (#8687)
+```
+
+Omit the scope when neither a ticket nor a single app applies, or when the
+summary already says where — `feat: serve /.well-known/jwks from <vendor> app`
+needs no scope.
 
 ## NOMERGE / WIP markers
 
@@ -124,7 +131,8 @@ WIP feat: move <vendor> UI app to nexus
 ## What the house never writes
 
 ```
-Rename Tidbit to Factoid across py/ (ENG-6276)   ← Title Case, no type, ticket in parens
+Rename Tidbit to Factoid across py/ (ENG-6276)   ← Title Case, no type, ticket in trailing parens
+fix: brrr ctx - eng-6276                          ← real, but the ticket belongs in the scope
 Updated the exports.                              ← past tense, capitalized, trailing period
 fix(py): fix filename access                      ← "fix" twice
 chore: add retry to payment handler               ← behavior change hidden as a chore

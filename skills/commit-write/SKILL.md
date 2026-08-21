@@ -16,23 +16,25 @@ owns that.
 ## The format
 
 ```
-type(component): summary
+type(scope): summary
 ```
 
-The PR title carries the ticket; branch commits do not need it:
+The scope is the ticket when the work has one, and the app or package when it
+does not:
 
 ```
-type(component): summary - eng-1234
+feat(eng-5526): generic render mustache template
+feat(inspector): make event table collapsable
 ```
 
-Never type the `(#1234)` suffix. GitHub appends it at squash time.
+A commit and its PR title are the same string. Never type the `(#1234)` suffix —
+GitHub appends it at squash time.
 
 | Part | Rule |
 |---|---|
 | `type` | Required. From the table below. Lowercase. |
-| `(component)` | Optional. The literal directory, package, or tool touched. |
+| `(scope)` | The ticket, else the app or package. See below. |
 | `summary` | Lowercase, imperative, no trailing period. Aim for 50 characters. |
-| `- eng-1234` | PR title only. Lowercase. Omit when no ticket exists. |
 
 ## Types
 
@@ -54,12 +56,17 @@ prepares nothing in particular, it is a `refactor`.
 
 ## Scope
 
-The scope names **the code**, not the ticket and not a layer. Use the literal
-directory, package, or tool: `(py)`, `(cdktf)`, `(nix)`, `(py-stores)`,
-`(lib-agent)`, `(inspector)`.
+One slot, two cases. Check for a ticket first.
 
-- If the change spans several components, omit the scope. Do not invent a bucket.
-- If the summary already names the component, omit the scope. Never say it twice.
+- **The work has a ticket** → the scope is the ticket, lowercase:
+  `feat(eng-5526):`, `fix(eng-6276):`.
+- **No ticket** → the scope is the app or package: `feat(inspector):`,
+  `chore(openapi):`. Match the product's own casing — `feat(GuidingCare):`, not
+  `feat(guidingcare):`.
+- **Neither applies** → omit the scope. Do not invent a bucket.
+
+Never put the ticket in trailing parentheses — `... (ENG-5526)` collides with
+GitHub's `(#1234)`. The ticket goes in the scope or nowhere.
 
 ## Summary line
 
@@ -85,9 +92,9 @@ Check it against this list, and report only what fails:
 1. Type present, and the right one — a behavior change filed as `chore` hides it
    from anyone reading the log.
 2. `prefactor` vs `refactor` used honestly.
-3. Scope names real code, or is absent.
+3. Scope is the ticket when one exists, otherwise a real app or package.
 4. Summary is lowercase, imperative, no trailing period, names something concrete.
-5. PR title carries the ticket when one exists.
+5. No ticket in trailing parentheses.
 6. No `NOMERGE` / `WIP` marker left on a PR that is ready.
 
 A title that merely reads awkwardly is not a finding. Say so and move on.
