@@ -1,18 +1,17 @@
 ---
 name: orchestrate
-description: Use when the user wants to take a ticket all the way to a review-ready PR in one shot — triggers on "/orchestrate", "orchestrate this", "ticket to PR", "run the full workflow", or handing over a ticket/issue URL and asking for the finished PR. Gates on a user-story-shaped ticket, drives TDD, runs the reviews in parallel, loops until clean, then prepares the PR.
+description: Use when the user wants to take a ticket all the way to a review-ready PR in one shot — triggers on "/orchestrate", "orchestrate this", "ticket to PR", "run the full workflow", or handing over a ticket/issue URL and asking for the finished PR. Gates on a user-story-shaped ticket, drives TDD, runs pr-review until clean, then prepares the PR.
 ---
 
 # Orchestrate
 
 One command from a ticket to a PR the user can review. This skill doesn't do the
-work itself — it *sequences* the repo's other skills into a gated pipeline and
-runs the two reviews in parallel. The end state is a described PR, staged and
-ready, waiting only on the user's go-ahead to open.
+work itself — it *sequences* the repo's other skills into a gated pipeline. The
+end state is a described PR, staged and ready, waiting only on the user's
+go-ahead to open.
 
 Chains: [user-story](../user-story/SKILL.md) → [tdd](../tdd/SKILL.md) →
-`code-review` ∥ `ponytail:ponytail-review` ∥ `security-review` →
-[pr-description](../pr-description/SKILL.md).
+[pr-review](../pr-review/SKILL.md) → [pr-description](../pr-description/SKILL.md).
 
 ## The one rule: no blind starts
 
@@ -54,30 +53,20 @@ question is answered.
 Run [tdd](../tdd/SKILL.md) on the ticket: red-green-refactor, one acceptance
 criterion at a time. Don't skip the failing-test-first step.
 
-### 2. Review — three lenses, in parallel
+### 2-3. Review and loop — hand off to pr-review
 
-Dispatch **parallel sub-agents** (superpowers `dispatching-parallel-agents`) — one
-per lens, all reading the same working diff (`git diff main...HEAD`):
+Run [pr-review](../pr-review/SKILL.md) over the working diff (`git diff
+main...HEAD`) **in fix mode**. That skill owns the whole review stage: the
+six-lens parallel fan-out, reconciling the findings into one ranked list, and
+the fix-and-re-review loop with its thrash guard.
 
-- `code-review` — correctness, bugs, reuse/simplification.
-- `ponytail:ponytail-review` — over-engineering: what to delete or replace with
-  stdlib/native.
-- `security-review` — vulnerabilities in the pending changes.
+Orchestrate adds one thing on top: since the code was just written here, a
+finding is not automatically a defect in someone else's work — it may be a gap in
+the acceptance criteria. When a finding contradicts the ticket, that's a stage-0
+question resurfacing, not a fix. Stop and ask.
 
-Collect all findings before you act on any. A ponytail "delete this" and a
-code-review "fix this" can target the same code. Reconcile them together.
-
-### 3. Loop — fix, re-review, until clean
-
-Address the findings (auto-fix). Then **re-run the three reviews on the updated
-diff**. Repeat until all three come back with nothing material. Each round:
-- Fix the findings. Re-run the suite and keep the tests green.
-- Re-review in parallel.
-- Stop when clean. Stop also when a finding is a genuine judgment call the user
-  should make — ask rather than loop forever on a subjective point.
-
-Guardrail against thrash: if a finding survives two fix attempts, stop fixing it
-and surface it to the user instead of oscillating.
+Exit this stage when pr-review reports nothing material, or when it surfaces a
+judgment call — pause and ask rather than looping on a subjective point.
 
 ### 4. PR — describe and stage, then confirm
 
@@ -99,8 +88,6 @@ cleanup pass.
 
 - **Never start on assumptions.** Stage 0's gate is the whole point. If in doubt,
   ask.
-- **Parallel only where it's safe.** The three reviews read the same diff and don't
-  mutate — safe to fan out. Fixes are sequential (they touch the same tree).
 - **Don't gold-plate the loop.** Clean means no *material* findings, not zero
   nitpicks. Ship when it's right, not when it's exhaustively polished.
 - **The user opens the PR.** This skill stops at "ready to create", never pushes a
