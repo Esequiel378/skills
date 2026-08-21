@@ -11,7 +11,8 @@ end state is a described PR, staged and ready, waiting only on the user's
 go-ahead to open.
 
 Chains: [ticket-write](../ticket-write/SKILL.md) → [tdd](../tdd/SKILL.md) →
-[pr-review](../pr-review/SKILL.md) → [pr-describe](../pr-describe/SKILL.md).
+[pr-review](../pr-review/SKILL.md) → [commit-write](../commit-write/SKILL.md) →
+[pr-describe](../pr-describe/SKILL.md).
 
 ## The one rule: no blind starts
 
@@ -70,11 +71,11 @@ judgment call — pause and ask rather than looping on a subjective point.
 
 ### 4. PR — describe and stage, then confirm
 
-Run [pr-describe](../pr-describe/SKILL.md) to write the PR body — the *why*,
-the approach, the review guide, risk/rollout. `Closes <TICKET>`.
+Run [commit-write](../commit-write/SKILL.md) for the commit messages and the PR
+title. Run [pr-describe](../pr-describe/SKILL.md) for the PR body.
 
-Then **prepare, don't auto-push**. Commit the branch. Show the user the final PR
-description. Show the exact `gh pr create` command that would open it. Hand off
+Then **prepare, don't auto-push**. Commit the branch. Show the user the PR title
+and body. Show the exact `gh pr create` command that would open it. Hand off
 there. The user opens it. Honor the repo's git attribution rules — no
 self-attribution in commits, PR title, or body.
 

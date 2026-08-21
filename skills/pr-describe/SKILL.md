@@ -1,94 +1,106 @@
 ---
 name: pr-describe
-description: Use when creating, opening, or writing a pull request, pushing a branch for review, or running `gh pr create` — any time a PR description or summary is about to be written. Produces a description that explains why the change exists and what a reviewer should focus on, instead of a per-file changelog that restates the diff.
+description: Use when writing or reviewing the body of a pull request — after `gh pr create`, when filling in an empty PR description, or when asked whether a PR body says enough. Covers the body only; the PR title and commit messages are commit-write.
 ---
 
 # PR Description
 
-The diff already says **what** changed, line by line. A PR description that
-re-lists the files is wasted space — the reviewer can read the diff. Your job is
-everything the diff *can't* show: **why this change exists, why it's built this
-way, and where a reviewer should look hardest.**
+The PR body is the only part of a change that never reaches git. The title
+becomes the commit subject on `main`; the body stays on GitHub for the reviewer
+in front of you. Write it for that reviewer, and for nobody else.
 
-Closely related to [ticket-write](../ticket-write/SKILL.md): the ticket says why the
-work matters *before* it's built; the PR says why the code is *right* now that it
-is. If a ticket exists, pull its "so that" straight into the Why.
+House style, measured over 240 real PRs: **no headings, no checklists, no
+template.** A third ship with no body at all. The median body is 234 characters.
 
-## Ground it first — never invent the why
+## Does this PR need a body?
 
-Motivation you make up is worse than none. Recover it from real signal:
+**No** — if the title already says everything. Mechanical, low-risk, or
+self-evident work ships bodyless: version bumps, key rotations, CI timeouts,
+formatting, a rename the title names. An empty body on a `chore:` is correct,
+not lazy.
 
-- `git diff main...HEAD` and `git log main..HEAD` — what actually changed and the
-  commit narrative.
-- The linked issue/ticket and the branch name — the original problem.
-- If the *why* still isn't recoverable, **ask the user one question** ("what
-  problem does this solve?") rather than fabricate a plausible-sounding reason.
+**Yes** — if any of these is true:
 
-## The body IS these four parts, in this order
+- The *why* is not obvious from the diff.
+- The PR is part of a stack, or must merge in a particular order.
+- A reviewer would otherwise trip on something — generated noise, a known gap,
+  a deliberate stopgap.
+- The change is visual.
+- You want a specific thing looked at.
 
-1. **Why** — the problem or goal. What was broken, missing, or slow; who felt it;
-   link the ticket. One or two sentences. This is the part reviewers and
-   future archaeologists actually need.
-2. **Approach & why this way** — how you solved it, in prose, and why *this* way
-   over the obvious alternative (the trade-off you made). Not a file list.
-3. **Review guide** — where to look hardest: the subtle/risky bits, decisions
-   worth a second opinion, anything non-obvious. Point at specific spots
-   (`file.go:42`) *only* where the diff isn't self-explanatory.
-4. **Risk & rollout** — what could break, how it was verified, how to roll back,
-   what to watch after deploy (a metric, a flag). Omit a part only if it's
-   genuinely N/A — say so in one line rather than padding.
+If none of those hold, leave it empty and say so.
 
-A per-file "## Changes" section is the default trap — it looks thorough but only
-echoes the diff. Fold anything worth saying about a file into **Review guide** as
-a reviewer would care about it, not as a changelog entry.
+## What a body is made of
 
-## Template
+Flat dash-bullets, or one short paragraph. Lowercase openers are normal. No
+`## Why` / `## Approach` headings — the corpus has two headings in 157 bodies,
+both one-offs. No `- [ ]` checklists; there are none in the corpus at all.
 
-```markdown
-## Why
-<the problem/goal; link the ticket>
+Write only the parts that apply, in whatever order fits:
 
-## Approach
-<how, and why this way over the alternative>
+| Part | When |
+|---|---|
+| What changed, as bullets | The diff spans several things worth naming |
+| Why, in a sentence | The reason is not visible in the code |
+| The tradeoff you took | You picked a stopgap, or a slower path, on purpose |
+| Stack and merge order | Another PR must land first, or this one enables the next |
+| Reviewer warnings | Generated noise, a big lockfile, a deliberately deferred gap |
+| Evidence | A screenshot, a repro, a log link, one "tested by …" line |
+| Open questions | A `TODO:` block, when the answer belongs to the reviewer |
 
-## Review guide
-<where to look hardest; risky/subtle bits; file:line for non-obvious spots>
+## Stack and merge order
 
-## Risk & rollout
-<what could break · how it was verified · rollback · what to watch>
+Coordinate stacks in the body — the corpus does this in prose, never with a
+tool. Be explicit about direction and consequence:
 
-Closes <TICKET>
-```
+> this must be merged AFTER #9566 or else <vendor> evals will break
 
-## Good vs. bad
+> this PR exists separately from #9599 to isolate 3000+ lines of package-lock.json changes
 
-**Bad** (echoes the diff — reviewer learns nothing new):
-> ## Changes
-> - `payment.go`: wrapped Stripe call in a 3s timeout, added retry
-> - `checkout.yaml`: added `payment_timeout_ms`, `payment_max_retries`
-> - `metrics.go`: added `payment_retry_total` counter
+> supports #9645 which creates a large schema based on a large enum
 
-**Good** (says what the diff can't):
-> ## Why
-> Checkout failed intermittently at peak (PROJ-812): the Stripe call had no
-> bounded timeout, so slow upstream responses blocked handlers and cascaded.
->
-> ## Approach
-> Bound the call to 3s and retry twice with backoff, so transient slowness
-> recovers instead of failing the checkout. Limits live in config, not code, so
-> we can tune against real p99 without a redeploy.
->
-> ## Review guide
-> Worst case is 3s × 3 attempts ≈ 9s — confirm the caller's deadline tolerates
-> that. Retries reuse the same Stripe idempotency key (`payment.go:58`) to avoid
-> double-charging when a slow first attempt actually succeeded — worth a close look.
->
-> ## Risk & rollout
-> Config defaults ship in the diff, no manual step. Watch `payment_retry_total`;
-> a sustained climb means 3s is too tight. Revert = drop the retry wrapper.
+Warn about noise you knowingly introduced. Naming "2,996 lines of
+`package-lock.json`" up front saves the reviewer the discovery.
 
-## After drafting
+## Evidence beats a test plan
 
-Show the description. If the user asked to actually open the PR (or push for
-review), create it with `gh pr create` using this body. Follow the repo's git
-attribution rules.
+There is no "Testing" section in this house. Evidence is pasted inline instead:
+
+- Visual change → paste the screenshot. Raw `<img>` from GitHub's uploader.
+- Bug fix → the repro, or the log/observability link that proves it.
+- Otherwise → one line: `tested by checking that ephemeral web workers are up`.
+
+## Tickets
+
+Reference tickets as a bare `ENG-1234` or a plain Linear URL. **Do not use
+`Closes #` / `Fixes #`** — the corpus has five across 240 PRs, and auto-close
+fires on merge whether or not the ticket is actually done. Link sibling PRs as
+`#9645`.
+
+## Ground it — never invent the why
+
+- Read `git diff main...HEAD` and `git log main..HEAD`.
+- Read the ticket and the branch name.
+- If the why is still not recoverable, ask the user one question. Do not
+  fabricate a plausible reason.
+
+## Reviewing a body
+
+Report only real gaps:
+
+1. Empty on a PR that needed a body — name which trigger above it hit.
+2. Bullets that restate the diff file by file, adding nothing.
+3. A stack dependency the body does not mention.
+4. A visual change with no screenshot.
+5. `Closes #` used, or headings and checklists that do not match the house.
+
+A short body is not a finding. Most bodies here are short on purpose.
+
+## Guardrails
+
+- **Never invent a ticket, a link, or a test that was run.**
+- **Do not pad.** Adding a heading to a two-bullet body makes it worse.
+- **Do not restate the title.** The reviewer already read it.
+- Follow the repo's git attribution rules. No generated-by footers.
+
+Verbatim style anchors from the real corpus: [examples.md](examples.md).

@@ -3,6 +3,7 @@
   "skills": [
     "./skills/architecture-hexagonal",
     "./skills/architecture-review",
+    "./skills/commit-write",
     "./skills/plan-grill",
     "./skills/pr-comments-address",
     "./skills/pr-describe",
