@@ -10,7 +10,7 @@ work itself — it *sequences* the repo's other skills into a gated pipeline. Th
 end state is a described PR, staged and ready, waiting only on the user's
 go-ahead to open.
 
-Chains: [story-write](../story-write/SKILL.md) → [tdd](../tdd/SKILL.md) →
+Chains: [ticket-write](../ticket-write/SKILL.md) → [tdd](../tdd/SKILL.md) →
 [pr-review](../pr-review/SKILL.md) → [pr-describe](../pr-describe/SKILL.md).
 
 ## The one rule: no blind starts
@@ -26,14 +26,14 @@ made fluent is still wrong.
 ### 0. Gate — resolve the ticket, or refuse
 
 The input must resolve to a ticket that follows the
-[story-write](../story-write/SKILL.md) structure (INVEST, testable acceptance
+[ticket-write](../ticket-write/SKILL.md) structure (INVEST, testable acceptance
 criteria, real anchors).
 
 - **Ticket URL / existing ticket** → read it. If it's already INVEST-complete
   with clear acceptance criteria, proceed. If it's thin (no criteria, vague
-  scope), run **story-write** to sharpen it. Block on the user's confirmation
+  scope), run **ticket-write** to sharpen it. Block on the user's confirmation
   before continuing.
-- **Just an idea, no ticket** → run **story-write** to draft one. Block on the
+- **Just an idea, no ticket** → run **ticket-write** to draft one. Block on the
   user's approval. If they want it tracked, create it in the tracker. No ticket,
   no start.
 

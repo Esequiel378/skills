@@ -20,8 +20,8 @@ Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.
 | [`pr-review-sl`](./skills/pr-review-sl/SKILL.md) | Terse staff-architect review lens — interrogates the design rather than the syntax: wrong layer, wrong name, wrong schema, scope creep. Socratic, minimum words. |
 | [`prompt-improve`](./skills/prompt-improve/SKILL.md) | Rewrites a raw, vague prompt into a sharp one grounded in the current project, shows the rewrite, then executes it. Logs every run; a periodic review tunes the skill over time. |
 | [`prompt-improve-review`](./skills/prompt-improve-review/SKILL.md) | Analyzes the `prompt-improve` run log, judges which rewrites helped, and proposes one targeted edit to that skill. |
-| [`story-write`](./skills/story-write/SKILL.md) | Turns a rough idea into a great, INVEST-complete ticket in the team's house format — slices big asks into independently-shippable vertical slices, then offers to create it in the connected tracker. |
 | [`tdd`](./skills/tdd/SKILL.md) | Test-driven development with the red-green-refactor loop. |
+| [`ticket-write`](./skills/ticket-write/SKILL.md) | Turns a rough idea into a great, INVEST-complete ticket in the team's house format — slices big asks into independently-shippable vertical slices, then offers to create it in the connected tracker. |
 
 ## Install
 

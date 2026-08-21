@@ -13,7 +13,7 @@
     "./skills/pr-review-sl",
     "./skills/prompt-improve",
     "./skills/prompt-improve-review",
-    "./skills/story-write",
-    "./skills/tdd"
+    "./skills/tdd",
+    "./skills/ticket-write"
   ]
 }

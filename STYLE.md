@@ -14,7 +14,7 @@ checklists, guardrails — anything the agent executes.
 **Descriptive** text (rationale, "what good looks like", worked examples) is
 exempt. Vivid phrasing there is steering signal, not noise. Keep it.
 
-Good: `Run story-write to sharpen it. Block on the user's confirmation before
+Good: `Run ticket-write to sharpen it. Block on the user's confirmation before
 continuing.`
 
 Bad: `Write the PR body via pr-describe, then ensure the branch is committed
@@ -77,5 +77,5 @@ Not: *fire*, *drive through*, *chain*, *load* (for skills), *follow ... exactly*
 | **finding** | One defect or objection a review produces |
 
 A tracked work item is a **ticket** — never a *story*, *user story*, or *issue*.
-`story-write` keeps *User story* and *Technical story* only where they name the
+`ticket-write` keeps *User story* and *Technical story* only where they name the
 two ticket **types**; everywhere else the noun is *ticket*.

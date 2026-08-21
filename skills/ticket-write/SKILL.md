@@ -1,6 +1,6 @@
 ---
-name: story-write
-description: Use when the user wants to turn a rough idea into a great ticket — triggers on "/story-write", "write a story for", "help me write this ticket", "make this ticket better", "split this into stories", or any half-formed task headed for Jira/Linear/GitHub Issues. Drafts in the team's house format, slices big asks into independently-shippable vertical slices, then offers to create the ticket in whatever tracker is connected.
+name: ticket-write
+description: Use when the user wants to turn a rough idea into a great ticket — triggers on "/ticket-write", "write a story for", "help me write this ticket", "make this ticket better", "split this into stories", or any half-formed task headed for Jira/Linear/GitHub Issues. Drafts in the team's house format, slices big asks into independently-shippable vertical slices, then offers to create the ticket in whatever tracker is connected.
 ---
 
 # Write a Ticket

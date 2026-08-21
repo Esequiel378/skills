@@ -10,7 +10,7 @@ re-lists the files is wasted space — the reviewer can read the diff. Your job 
 everything the diff *can't* show: **why this change exists, why it's built this
 way, and where a reviewer should look hardest.**
 
-Closely related to [story-write](../story-write/SKILL.md): the ticket says why the
+Closely related to [ticket-write](../ticket-write/SKILL.md): the ticket says why the
 work matters *before* it's built; the PR says why the code is *right* now that it
 is. If a ticket exists, pull its "so that" straight into the Why.
 
