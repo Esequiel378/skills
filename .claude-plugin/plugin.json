@@ -14,6 +14,7 @@
     "./skills/pr-review-sl",
     "./skills/prompt-improve",
     "./skills/prompt-improve-review",
+    "./skills/sql-review",
     "./skills/tdd",
     "./skills/ticket-write"
   ]
