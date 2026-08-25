@@ -8,3 +8,5 @@ Interview me relentlessly about every aspect of this plan until we reach a share
 Ask the questions one at a time.
 
 If a question can be answered by exploring the codebase, explore the codebase instead.
+
+Run domain-modeling alongside the grill. When a domain term or a hard-to-reverse decision resolves, capture it as that skill directs.
