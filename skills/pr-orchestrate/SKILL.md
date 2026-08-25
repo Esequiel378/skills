@@ -58,7 +58,7 @@ criterion at a time. Don't skip the failing-test-first step.
 
 Run [pr-review](../pr-review/SKILL.md) over the working diff (`git diff
 main...HEAD`) **in fix mode**. That skill owns the whole review stage: the
-six-lens parallel fan-out, reconciling the findings into one ranked list, and
+parallel lens fan-out, reconciling the findings into one ranked list, and
 the fix-and-re-review loop with its thrash guard.
 
 Orchestrate adds one thing on top: since the code was just written here, a

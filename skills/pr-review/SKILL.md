@@ -1,17 +1,18 @@
 ---
 name: pr-review
-description: Use when the user wants a diff or PR reviewed from every angle at once — triggers on "/pr-review", "review this PR", "review my changes", "full review", or handing over a PR URL/number and asking what's wrong with it. Fans out six review lenses in parallel, reconciles their findings into one ranked list, and reports. Fixes only when asked.
+description: Use when the user wants a diff or PR reviewed from every angle at once — triggers on "/pr-review", "review this PR", "review my changes", "full review", or handing over a PR URL/number and asking what's wrong with it. Fans out the review lenses in parallel, reconciles their findings into one ranked list, and reports. Fixes only when asked.
 ---
 
 # PR Review
 
-One command, six lenses, one ranked list. This skill doesn't review by itself —
+One command, all the lenses, one ranked list. This skill doesn't review by itself —
 it *fans out* the repo's review skills in parallel over the same diff, then
 reconciles what comes back into a single verdict the user can act on.
 
 Fans out: `code-review` ∥ `ponytail:ponytail-review` ∥ `security-review` ∥
 [pr-review-po](../pr-review-po/SKILL.md) ∥ [pr-review-sl](../pr-review-sl/SKILL.md) ∥
-[pr-review-az](../pr-review-az/SKILL.md).
+[pr-review-az](../pr-review-az/SKILL.md), plus
+[sql-review](../sql-review/SKILL.md) when the diff touches SQL.
 
 ## 0. Resolve the target, and read it
 
@@ -33,7 +34,7 @@ Two checks that are cheap here and expensive later:
   route that still points elsewhere, a flag that's off, or an unexported symbol
   changes every finding's severity from "bug" to "not yet live".
 
-## 1. Fan out — six lenses, in parallel
+## 1. Fan out — the lenses, in parallel
 
 Dispatch **parallel sub-agents** (superpowers `dispatching-parallel-agents`), one
 per lens, each reading the same resolved diff. They don't mutate, so this is safe
@@ -47,6 +48,11 @@ to run wide.
 | `pr-review-po` | silent failure modes, tests that prove nothing, type lies, drift |
 | `pr-review-sl` | wrong layer, wrong name, wrong schema, scope creep |
 | `pr-review-az` | type-system lies, undefined smuggling, exceptions as control flow, comment/naming hygiene, schema back-compat |
+| `sql-review` | SQL vs database standards — naming, types, migrations, sqlc config |
+
+`sql-review` is conditional. If the diff touches `.sql` files, migration
+directories, or `sqlc.yaml`, dispatch it as an additional lens. Otherwise
+skip it.
 
 The last three are not stylistic garnish — they cover classes the mechanical
 lenses systematically miss. `code-review` will pass a test suite that asserts a
