@@ -4,6 +4,7 @@
     "./skills/architecture-hexagonal",
     "./skills/architecture-review",
     "./skills/commit-write",
+    "./skills/domain-modeling",
     "./skills/plan-grill",
     "./skills/pr-comments-address",
     "./skills/pr-describe",
