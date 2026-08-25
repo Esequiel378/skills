@@ -184,12 +184,33 @@ below. Flag every deviation as a finding.
       and `emit_empty_slices` are all `true`
 - [ ] `uuid` overrides to `github.com/google/uuid` `UUID`, pointer when
       nullable
-- [ ] `pg_catalog.timestamp` and `pg_catalog.timestamptz` override to
-      `time.Time`, pointer when nullable
+- [ ] `pg_catalog.timestamp` and `timestamptz` override to `time.Time`,
+      pointer when nullable — note the two spellings, see below
 
 If the config defines multiple databases, share these settings via YAML
 anchors (`&default`, `&go_defaults`). A single-database config needs no
 anchors — their absence is not a finding.
+
+**Which `db_type` spelling takes effect is per-type and not guessable.** An
+override that does not match is silent: sqlc generates, exits 0, and the column
+comes out as `pgtype.X`. Measured on sqlc v1.30.0, engine `postgresql`:
+
+| spelling | effect | | spelling | effect |
+| --- | --- | --- | --- | --- |
+| `pg_catalog.timestamp` | applies | | `timestamp` | no-op |
+| `pg_catalog.timestamptz` | **no-op** | | `timestamptz` | applies |
+| `pg_catalog.date` | no-op | | `date` | applies |
+| `numeric` | no-op | | `pg_catalog.numeric` | applies |
+
+So `timestamptz` is bare while `timestamp` is prefixed, in the same config. Do
+not "correct" either into the other. When adding an override for any type not
+listed here, regenerate and grep `models.gen.go` for `pgtype.` before believing
+it worked.
+
+The canonical config covers `timestamp`, `timestamptz` and `uuid` only. A
+schema with `date` or `numeric` columns needs its own overrides — without them
+those columns generate as `pgtype.Date` and `pgtype.Numeric`. Adding them is not
+a deviation.
 
 Canonical config:
 
@@ -221,10 +242,11 @@ sql:
             nullable: true
             go_type:
               type: "*time.Time"
-          - db_type: "pg_catalog.timestamptz"
+          # bare, not pg_catalog: the prefixed spelling is a silent no-op
+          - db_type: "timestamptz"
             go_type:
               type: "time.Time"
-          - db_type: "pg_catalog.timestamptz"
+          - db_type: "timestamptz"
             nullable: true
             go_type:
               type: "*time.Time"
