@@ -62,6 +62,22 @@ both modes: reviewing flags deviations, writing avoids them from the start.
 - [ ] Views prefixed `v_`
 - [ ] Materialized views prefixed `mv_`
 
+**Named queries** (sqlc `-- name:`, and any other place a query gets a name)
+- [ ] `{Entity}{Action}`, entity first — `UsersList`, `UsersGet`, not
+      `ListUsers`, not `GetUser`
+- [ ] The entity is the table name, in the same plural the table uses:
+      `UsersList`, not `UserList`
+- [ ] The action is a verb, and may carry a qualifier: `UsersListActive`,
+      `OrdersDeleteForCustomer`
+- [ ] A query spanning tables takes the entity it reads from, or writes to
+      when it writes
+
+Entity first so every query against one table shares a prefix. That is what
+makes them sort together in `queries.sql`, in the generated method set, and in
+an editor's autocomplete — `Users` shows the whole surface for that table.
+Verb-first scatters them: `ListUsers` sorts under L, next to `ListOrders`,
+which is a neighbour it has nothing to do with.
+
 ---
 
 ### Column ordering
