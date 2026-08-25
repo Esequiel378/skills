@@ -1,6 +1,6 @@
 ---
 name: sql-review
-description: Use when SQL is written, changed, or reviewed against the database standards — triggers on "/sql-review", "review this SQL", "check this migration", "audit this schema", "does this follow our conventions", or when the user asks to write or alter a table, index, view, query, or migration.
+description: Use when SQL is written, changed, or reviewed against the database standards — triggers on "/sql-review", "review this SQL", "check this migration", "audit this schema", "does this follow our conventions", when the user asks to write or alter a table, index, view, query, or migration, or when a diff touches sqlc.yaml or sqlc-generated code.
 ---
 
 # SQL Review
@@ -165,6 +165,78 @@ Important business entities must include:
       separate migration
 - [ ] Rollback instructions included as a comment in the migration
 - [ ] Migration file follows `NNN_descriptive_name.sql` naming
+
+---
+
+### sqlc configuration
+
+If the project uses sqlc, compare `sqlc.yaml` against the canonical config
+below. Flag every deviation as a finding.
+
+- [ ] `version: "2"` — never version 1
+- [ ] `engine: "postgresql"`
+- [ ] Queries live in `database/queries.sql`; schema comes from
+      `database/migrations`
+- [ ] `sql_package: "pgx/v5"` — not `database/sql`, not pgx/v4
+- [ ] Generated files carry the `.gen.go` suffix (`db.gen.go`,
+      `models.gen.go`, `output_files_suffix: ".gen.go"`)
+- [ ] `emit_db_tags`, `emit_sql_as_comment`, `emit_pointers_for_null_types`,
+      and `emit_empty_slices` are all `true`
+- [ ] `uuid` overrides to `github.com/google/uuid` `UUID`, pointer when
+      nullable
+- [ ] `pg_catalog.timestamp` and `pg_catalog.timestamptz` override to
+      `time.Time`, pointer when nullable
+
+If the config defines multiple databases, share these settings via YAML
+anchors (`&default`, `&go_defaults`). A single-database config needs no
+anchors — their absence is not a finding.
+
+Canonical config:
+
+```yaml
+version: "2"
+sql:
+  - &default
+    engine: "postgresql"
+    queries:
+      - "database/queries.sql"
+    schema: "database/migrations"
+    gen:
+      go: &go_defaults
+        package: "database"
+        out: "database"
+        sql_package: "pgx/v5"
+        output_db_file_name: "db.gen.go"
+        output_models_file_name: "models.gen.go"
+        output_files_suffix: ".gen.go"
+        emit_db_tags: true
+        emit_sql_as_comment: true
+        emit_pointers_for_null_types: true
+        emit_empty_slices: true
+        overrides:
+          - db_type: "pg_catalog.timestamp"
+            go_type:
+              type: "time.Time"
+          - db_type: "pg_catalog.timestamp"
+            nullable: true
+            go_type:
+              type: "*time.Time"
+          - db_type: "pg_catalog.timestamptz"
+            go_type:
+              type: "time.Time"
+          - db_type: "pg_catalog.timestamptz"
+            nullable: true
+            go_type:
+              type: "*time.Time"
+          - db_type: "uuid"
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"
+          - db_type: "uuid"
+            nullable: true
+            go_type:
+              type: "*uuid.UUID"
+```
 
 ---
 
