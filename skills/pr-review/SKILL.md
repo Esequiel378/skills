@@ -54,16 +54,39 @@ to run wide.
 | `pr-review-az` | type-system lies, undefined smuggling, exceptions as control flow, comment/naming hygiene, schema back-compat |
 | `sql-review` | SQL vs database standards — naming, types, migrations, sqlc config |
 
-`sql-review` is conditional. If the diff touches `.sql` files, migration
-directories, or `sqlc.yaml`, dispatch it as an additional lens. Otherwise
-skip it.
-
 The last three are not stylistic garnish — they cover classes the mechanical
 lenses systematically miss. `code-review` will pass a test suite that asserts a
 throw no client can observe; `pr-review-po` is the lens that catches it. `code-review`
 will pass a correct function living in the wrong package; `pr-review-sl` catches
 that. `code-review` will pass an event rename that breaks every already-persisted
 event; `pr-review-az` catches that.
+
+`sql-review` is conditional. If the diff touches `.sql` files, migration
+directories, or `sqlc.yaml`, dispatch it as an additional lens. Otherwise
+skip it.
+
+### Lens selection
+
+Default is every lens. `--lenses=<a,b,c>` restricts the fanout to the keys named.
+
+| Key | Lens |
+| --- | --- |
+| `code-review` | `code-review` |
+| `ponytail` | `ponytail:ponytail-review` |
+| `security` | `security-review` |
+| `po` | `pr-review-po` |
+| `sl` | `pr-review-sl` |
+| `az` | `pr-review-az` |
+| `sql` | `sql-review` |
+
+An unrecognised key is an error. Stop and name the key that did not match.
+Never silently drop it.
+
+`sql` stays conditional on the diff. Naming it does not force it when no SQL
+changed.
+
+Reconcile and report as below, however few lenses ran. A one-lens run still
+verifies every finding. It still ranks by severity.
 
 **Collect everything before acting on any of it.** A ponytail "delete this" and a
 code-review "fix this" routinely target the same lines.
