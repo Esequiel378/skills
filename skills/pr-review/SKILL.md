@@ -18,12 +18,16 @@ Fans out: `code-review` ∥ `ponytail:ponytail-review` ∥ `security-review` ∥
 
 Establish exactly what diff is under review before dispatching anything:
 
-- **PR number / URL** → `gh pr view <n> --json …` for metadata, `gh pr diff <n>`
-  for the patch. Also pull existing review comments (`gh api
-  repos/<o>/<r>/pulls/<n>/comments`) — a lens should not re-raise what a human
-  already raised.
 - **Branch** → `git diff <base>...HEAD`, base from the PR or the repo default.
+  This is the path any non-GitHub forge takes; the caller resolves the PR and
+  hands over a branch.
+- **PR number / URL** → `gh pr view <n> --json …` for metadata, `gh pr diff <n>`
+  for the patch. GitHub only.
 - **Nothing given** → the working diff (`git diff HEAD` plus staged).
+
+A lens should not re-raise what a human already raised. If the caller names a
+file of existing review comments, read it. On GitHub with no file named, fetch
+them (`gh api repos/<o>/<r>/pulls/<n>/comments`).
 
 Two checks that are cheap here and expensive later:
 
