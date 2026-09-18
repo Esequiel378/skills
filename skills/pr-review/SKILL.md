@@ -79,8 +79,19 @@ Default is every lens. `--lenses=<a,b,c>` restricts the fanout to the keys named
 | `az` | `pr-review-az` |
 | `sql` | `sql-review` |
 
-An unrecognised key is an error. Stop and name the key that did not match.
-Never silently drop it.
+Group aliases expand to several keys. They mix freely with single keys and with
+each other; the union runs, deduped.
+
+| Group | Expands to |
+| --- | --- |
+| `persona` | `az`, `sl`, `po` |
+| `audit` | `sql`, `ponytail`, `security` |
+
+So `--lenses=persona` runs the three persona lenses, and
+`--lenses=persona,code-review` adds the mechanical one.
+
+An unrecognised key or group is an error. Stop and name the one that did not
+match. Never silently drop it.
 
 `sql` stays conditional on the diff. Naming it does not force it when no SQL
 changed.
