@@ -23,6 +23,7 @@ Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.
 | [`pr-review-sl`](./skills/pr-review-sl/SKILL.md) | Terse staff-architect review lens — interrogates the design rather than the syntax: wrong layer, wrong name, wrong schema, scope creep. Socratic, minimum words. |
 | [`prompt-improve`](./skills/prompt-improve/SKILL.md) | Rewrites a raw, vague prompt into a sharp one grounded in the current project, shows the rewrite, then executes it. Logs every run; a periodic review tunes the skill over time. |
 | [`prompt-improve-review`](./skills/prompt-improve-review/SKILL.md) | Analyzes the `prompt-improve` run log, judges which rewrites helped, and proposes one targeted edit to that skill. |
+| [`sql-review`](./skills/sql-review/SKILL.md) | Holds all SQL — migrations, schemas, queries, `sqlc` config — to the house database standards. One checklist drives both modes: reviewing flags deviations, writing avoids them. |
 | [`tdd`](./skills/tdd/SKILL.md) | Test-driven development with the red-green-refactor loop. |
 | [`ticket-write`](./skills/ticket-write/SKILL.md) | Turns a rough idea into a great, INVEST-complete ticket in the team's house format — slices big asks into independently-shippable vertical slices, then offers to create it in the connected tracker. |
 
@@ -36,7 +37,7 @@ Symlinks each skill into `~/.claude/skills/`, so the local Claude CLI picks them
 make install          # or: ./scripts/link-skills.sh
 ```
 
-Safe to re-run. It also prunes symlinks left behind by renamed or deleted skills, and migrates any `~/.claude/` data directory whose skill was renamed — so pulling and running `make install` is all another machine needs.
+Safe to re-run. It also prunes symlinks left behind by renamed or deleted skills, and migrates any `~/.claude/` data directory whose skill was renamed — so pulling and running `make install` is all another machine needs. Third-party plugins this setup depends on (currently `healthcare@healthcare`) are installed by the same command.
 
 ### As a Claude Code plugin
 
