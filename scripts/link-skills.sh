@@ -70,3 +70,15 @@ while IFS= read -r -d '' skill_md; do
   ln -sfn "$src" "$target"
   echo "linked $name -> $src"
 done
+
+# --- plugins ----------------------------------------------------------------
+# Third-party plugins this setup depends on. Both commands are idempotent, so
+# re-running is free. One line per plugin: "<repo> <plugin>@<marketplace>".
+while read -r repo plugin; do
+  [ -n "$repo" ] || continue
+  claude plugin marketplace add "$repo" >/dev/null
+  claude plugin install "$plugin" >/dev/null
+  echo "installed $plugin"
+done <<'PLUGINS'
+anthropics/healthcare healthcare@healthcare
+PLUGINS
