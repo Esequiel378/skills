@@ -26,6 +26,7 @@ Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.
 | [`sql-review`](./skills/sql-review/SKILL.md) | Holds all SQL — migrations, schemas, queries, `sqlc` config — to the house database standards. One checklist drives both modes: reviewing flags deviations, writing avoids them. |
 | [`tdd`](./skills/tdd/SKILL.md) | Test-driven development with the red-green-refactor loop. |
 | [`ticket-write`](./skills/ticket-write/SKILL.md) | Turns a rough idea into a great, INVEST-complete ticket in the team's house format — slices big asks into independently-shippable vertical slices, then offers to create it in the connected tracker. |
+| [`unslop`](./skills/unslop/SKILL.md) | Edits prose to strip AI tells — filler, AI vocabulary, em dashes, passive voice, mannered phrasing — against 30-odd numbered rules. Manual-only (`/unslop`). Vendored from Cursor's [`pstack`](https://github.com/cursor/plugins/blob/main/pstack/skills/unslop/SKILL.md). |
 
 ## Install
 
