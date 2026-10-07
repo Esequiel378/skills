@@ -137,6 +137,15 @@ Merge the raw findings into a single ranked list:
 Say plainly when nothing material came back. A clean review reported as clean is
 more useful than a manufactured finding.
 
+Before you show the report, unslop it:
+
+- Read [unslop](../unslop/SKILL.md).
+- Apply its rules to the summary line and each finding's prose.
+- If an unslop rule conflicts with the report template, keep the template.
+
+The template wins on shape: the `—` and `→` separators, the `[lens]` tag, one
+line per finding. Unslop governs the words between them.
+
 ## 4. Fix — only when asked
 
 Reporting is the default. Fix only on an explicit `--fix` / "fix them" / "apply
