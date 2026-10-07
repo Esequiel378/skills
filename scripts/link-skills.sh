@@ -56,6 +56,26 @@ for link in "$DEST"/*; do
 done
 # --- end migrations ---------------------------------------------------------
 
+# Git Bash's plain `ln -s` silently copies the directory instead of linking it,
+# and a native symlink needs Developer Mode or an admin shell. So on Windows,
+# try a native symlink and fall back to a directory junction, which needs no
+# privilege and reads as a symlink to [ -L ] and readlink.
+link_dir() {
+  src="$1"
+  target="$2"
+  case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+      [ -L "$target" ] && rm "$target"
+      if ! MSYS=winsymlinks:nativestrict ln -sn "$src" "$target" 2>/dev/null; then
+        cmd //c mklink //J "$(cygpath -w "$target")" "$(cygpath -w "$src")" >/dev/null
+      fi
+      ;;
+    *)
+      ln -sfn "$src" "$target"
+      ;;
+  esac
+}
+
 find "$REPO/skills" -name SKILL.md -not -path '*/node_modules/*' -print0 |
 while IFS= read -r -d '' skill_md; do
   src="$(dirname "$skill_md")"
@@ -67,7 +87,7 @@ while IFS= read -r -d '' skill_md; do
     rm -rf "$target"
   fi
 
-  ln -sfn "$src" "$target"
+  link_dir "$src" "$target"
   echo "linked $name -> $src"
 done
 
