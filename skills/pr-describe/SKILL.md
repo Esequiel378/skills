@@ -84,6 +84,16 @@ fires on merge whether or not the ticket is actually done. Link sibling PRs as
 - If the why is still not recoverable, ask the user one question. Do not
   fabricate a plausible reason.
 
+## Unslop the draft
+
+- Read [unslop](../unslop/SKILL.md).
+- Apply its rules to the draft before you show it.
+- If an unslop rule conflicts with the house format above, keep the house format.
+
+The house format wins on shape: flat bullets, lowercase openers, short bodies.
+Unslop governs the words inside them. A terse bullet like `bumps the CI timeout
+to 20m` is house style, not rule-33 over-compression.
+
 ## Reviewing a body
 
 Report only real gaps:
@@ -93,6 +103,7 @@ Report only real gaps:
 3. A stack dependency the body does not mention.
 4. A visual change with no screenshot.
 5. `Closes #` used, or headings and checklists that do not match the house.
+6. AI tells that [unslop](../unslop/SKILL.md) flags. Cite the rule number.
 
 A short body is not a finding. Most bodies here are short on purpose.
 

@@ -18,6 +18,7 @@
     "./skills/prompt-improve-review",
     "./skills/sql-review",
     "./skills/tdd",
-    "./skills/ticket-write"
+    "./skills/ticket-write",
+    "./skills/unslop"
   ]
 }
