@@ -2,7 +2,9 @@
   "name": "esequiel378-skills",
   "skills": [
     "./skills/architecture-hexagonal",
+    "./skills/architecture-improve",
     "./skills/architecture-review",
+    "./skills/codebase-design",
     "./skills/commit-write",
     "./skills/domain-modeling",
     "./skills/plan-grill",
