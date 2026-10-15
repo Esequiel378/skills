@@ -1,0 +1,165 @@
+name: Release
+
+# A manual run releases main: it works out the version from the last final
+# tag, runs the checks, builds, and only then publishes the release, which
+# creates its tag at the dispatched commit. A failed run leaves no tag. A
+# version with a '-' is a pre-release. Needs Forgejo v10+ for the checkbox
+# input and v14+ for workflow-level concurrency.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: What to bump on the last final release
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+      rc:
+        description: Release candidate (vX.Y.Z-rc.N)
+        type: boolean
+        default: false
+
+# One release at a time: a later click waits for the earlier runs, then
+# works out its version from the tags they made. Forgejo queues every
+# waiting run in order and cancels none.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  version:
+    name: Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Release main only
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Releases are made from main, not $GITHUB_REF_NAME"
+          exit 1
+      - uses: https://data.forgejo.org/actions/checkout@v7
+        with:
+          fetch-depth: 0 # the tool reads the tags and refuses a shallow clone
+      - uses: https://data.forgejo.org/actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false # the tool is std only
+      - id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+          RC: ${{ inputs.rc }}
+        run: |
+          rc=""
+          if [ "$RC" = true ]; then rc=-rc; fi
+          version=$(go run ./tools/release version -bump "$BUMP" $rc)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "::notice title=Version::$version"
+
+  build:
+    name: Build
+    needs: version
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v7
+      - uses: https://data.forgejo.org/actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      # PROJECT: the checks CI runs, so a broken commit doesn't ship.
+      - run: go vet ./...
+      - run: go test ./...
+      # PROJECT: build every platform into dist/ with the version stamped in.
+      - name: Build
+        run: |
+          mkdir dist
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w -X main.version=$VERSION" -o "dist/APP_${VERSION}_linux_amd64" ./cmd/APP
+      # PROJECT: run one built binary and check it reports $VERSION.
+      - name: The binary knows its version
+        run: ./dist/APP_${VERSION}_linux_amd64 --version | grep -qx "APP $VERSION"
+      - name: Checksums
+        run: (cd dist && sha256sum * > checksums.txt)
+      - uses: https://data.forgejo.org/forgejo/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  release:
+    name: Release
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false # the publish step passes its own token
+      - uses: https://data.forgejo.org/actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Still the next version
+        # Re-running this job keeps the version job's output: refuse it if
+        # another release has shipped since.
+        env:
+          BUMP: ${{ inputs.bump }}
+          RC: ${{ inputs.rc }}
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          rc=""
+          if [ "$RC" = true ]; then rc=-rc; fi
+          now=$(go run ./tools/release version -bump "$BUMP" $rc)
+          if [ "$now" != "$VERSION" ]; then
+            echo "::error::This run built $VERSION, but the next release is now $now: run the workflow again"
+            exit 1
+          fi
+      - uses: https://data.forgejo.org/forgejo/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Publish the release
+        shell: bash
+        env:
+          TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.version.outputs.version }}
+        # Strict: an existing tag is never reused, and only a 404 counts as
+        # free. A draft a failed run left holds no tag, so it is removed. The
+        # draft is made at the dispatched commit, the files go up, and
+        # publishing it creates the tag. curl, not forgejo-release, which
+        # creates the tag before the upload.
+        run: |
+          api="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY" body="$RUNNER_TEMP/body.json"
+          req() { code=$(curl -sS -X "$1" -o "$body" -w '%{http_code}' -H "Authorization: token $TOKEN" "${@:3}" "$api$2"); }
+          fail() { echo "::error::$1: HTTP $code $(cat "$body")"; exit 1; }
+          command -v jq >/dev/null || { s=$(command -v sudo || true); $s apt-get update -qq && $s apt-get install -y -qq jq; }
+          req GET "/tags/$VERSION"
+          case $code in
+            404) ;;
+            200) echo "::error::$VERSION is already tagged"; exit 1 ;;
+            *) fail "Could not check for the $VERSION tag" ;;
+          esac
+          req GET "/releases/tags/$VERSION"
+          case $code in
+            404) ;;
+            200)
+              if [ "$(jq -r .draft "$body")" != true ]; then echo "::error::A $VERSION release already exists"; exit 1; fi
+              req DELETE "/releases/$(jq -r .id "$body")"
+              [ "$code" = 204 ] || fail "Could not remove the $VERSION draft a failed run left"
+              ;;
+            *) fail "Could not check for a $VERSION release" ;;
+          esac
+          prerelease=false
+          case "$VERSION" in *-*) prerelease=true ;; esac
+          go run ./tools/release notes -version "$VERSION" > "$RUNNER_TEMP/notes.md"
+          jq -n --arg tag "$VERSION" --arg sha "$GITHUB_SHA" --arg name "APP $VERSION" \
+            --rawfile notes "$RUNNER_TEMP/notes.md" --argjson pre "$prerelease" \
+            '{tag_name: $tag, target_commitish: $sha, name: $name, body: $notes, draft: true, prerelease: $pre}' > "$RUNNER_TEMP/release.json"
+          req POST /releases -H 'Content-Type: application/json' --data-binary @"$RUNNER_TEMP/release.json"
+          [ "$code" = 201 ] || fail "Could not create the $VERSION draft"
+          id=$(jq -r .id "$body")
+          for f in dist/*; do
+            req POST "/releases/$id/assets?name=${f##*/}" -F "attachment=@$f"
+            [ "$code" = 201 ] || fail "Could not upload ${f##*/}"
+          done
+          req PATCH "/releases/$id" -H 'Content-Type: application/json' --data-binary '{"draft": false}'
+          [ "$code" = 200 ] || fail "Could not publish $VERSION"
