@@ -1,0 +1,142 @@
+name: Release
+
+# A manual run releases main: it works out the version from the last final
+# tag, runs the checks, builds, and only then publishes the release, which
+# creates its tag at the dispatched commit. A failed run leaves no tag. A
+# version with a '-' is a pre-release.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: What to bump on the last final release
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+      rc:
+        description: Release candidate (vX.Y.Z-rc.N)
+        type: boolean
+        default: false
+
+# One release at a time: a later click waits for the earlier runs, then
+# works out its version from the tags they made.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    name: Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Release main only
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Releases are made from main, not $GITHUB_REF_NAME"
+          exit 1
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the tool reads the tags and refuses a shallow clone
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false # the tool is std only
+      - id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+          RC: ${{ inputs.rc }}
+        run: |
+          rc=""
+          if [ "$RC" = true ]; then rc=-rc; fi
+          version=$(go run ./tools/release version -bump "$BUMP" $rc)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "::notice title=Version::$version"
+
+  build:
+    name: Build
+    needs: version
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      # PROJECT: the checks CI runs, so a broken commit doesn't ship.
+      - run: go vet ./...
+      - run: go test ./...
+      # PROJECT: build every platform into dist/ with the version stamped in.
+      - name: Build
+        run: |
+          mkdir dist
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w -X main.version=$VERSION" -o "dist/APP_${VERSION}_linux_amd64" ./cmd/APP
+      # PROJECT: run one built binary and check it reports $VERSION.
+      - name: The binary knows its version
+        run: ./dist/APP_${VERSION}_linux_amd64 --version | grep -qx "APP $VERSION"
+      - name: Checksums
+        run: (cd dist && sha256sum * > checksums.txt)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  release:
+    name: Release
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Still the next version
+        # Re-running this job keeps the version job's output: refuse it if
+        # another release has shipped since.
+        env:
+          BUMP: ${{ inputs.bump }}
+          RC: ${{ inputs.rc }}
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          rc=""
+          if [ "$RC" = true ]; then rc=-rc; fi
+          now=$(go run ./tools/release version -bump "$BUMP" $rc)
+          if [ "$now" != "$VERSION" ]; then
+            echo "::error::This run built $VERSION, but the next release is now $now: run the workflow again"
+            exit 1
+          fi
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.version.outputs.version }}
+        # Strict: an existing tag is never reused, and only a 404 counts as
+        # free. A draft a failed run left holds no tag, so it is removed. The
+        # draft is made at the dispatched commit with the files, and
+        # publishing it creates the tag.
+        run: |
+          repo="repos/$GITHUB_REPOSITORY"
+          if gh api "$repo/git/ref/tags/$VERSION" --silent 2>"$RUNNER_TEMP/err"; then
+            echo "::error::$VERSION is already tagged"; exit 1
+          fi
+          grep -q 'HTTP 404' "$RUNNER_TEMP/err" || { echo "::error::Could not check for the $VERSION tag: $(cat "$RUNNER_TEMP/err")"; exit 1; }
+          for id in $(gh api "$repo/releases" --paginate --jq ".[] | select(.draft and .tag_name == \"$VERSION\") | .id"); do
+            gh api -X DELETE "$repo/releases/$id"
+          done
+          pre=""
+          case "$VERSION" in *-*) pre=--prerelease ;; esac
+          go run ./tools/release notes -version "$VERSION" > "$RUNNER_TEMP/notes.md"
+          gh release create "$VERSION" dist/* --draft $pre --target "$GITHUB_SHA" \
+            --title "APP $VERSION" --notes-file "$RUNNER_TEMP/notes.md"
+          gh release edit "$VERSION" --draft=false
