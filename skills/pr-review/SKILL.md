@@ -206,6 +206,9 @@ copies the box straight into GitHub.
 
 If the target is not a PR, skip the review-body summary. Keep the rest.
 
+To load the final drafts onto the PR as a pending review, the user runs
+[pr-comments-draft](../pr-comments-draft/SKILL.md).
+
 Voice of each comment:
 
 - Write like a teammate. Short, casual, first person, one to three sentences.
