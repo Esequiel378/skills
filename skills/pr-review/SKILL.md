@@ -27,7 +27,11 @@ Establish exactly what diff is under review before dispatching anything:
 
 A lens should not re-raise what a human already raised. If the caller names a
 file of existing review comments, read it. On GitHub with no file named, fetch
-them (`gh api repos/<o>/<r>/pulls/<n>/comments`).
+all three sources. Each one alone misses the others.
+
+- Inline line comments: `gh api --paginate repos/<o>/<r>/pulls/<n>/comments`.
+- Review summary bodies: `gh api --paginate repos/<o>/<r>/pulls/<n>/reviews`.
+- Conversation comments: `gh api --paginate repos/<o>/<r>/issues/<n>/comments`.
 
 Two checks that are cheap here and expensive later:
 
@@ -43,6 +47,9 @@ Two checks that are cheap here and expensive later:
 Dispatch **parallel sub-agents** (superpowers `dispatching-parallel-agents`), one
 per lens, each reading the same resolved diff. They don't mutate, so this is safe
 to run wide.
+
+If step 0 found existing comments, pass them in each lens's prompt. Tell the
+lens to skip points they already raise.
 
 | Lens | Catches |
 |---|---|
