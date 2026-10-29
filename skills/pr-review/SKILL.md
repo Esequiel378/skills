@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: Use when the user wants a diff or PR reviewed from every angle at once — triggers on "/pr-review", "review this PR", "review my changes", "full review", or handing over a PR URL/number and asking what's wrong with it. Fans out the review lenses in parallel, reconciles their findings into one ranked list, and reports. Fixes only when asked.
+description: Use when the user wants a diff or PR reviewed from every angle at once — triggers on "/pr-review", "review this PR", "review my changes", "full review", or handing over a PR URL/number and asking what's wrong with it. Fans out the review lenses in parallel, reconciles their findings into one ranked list, and reports it as draft PR comments for the user or a ranked list for a calling agent. Fixes only when asked.
 ---
 
 # PR Review
@@ -117,8 +117,28 @@ Merge the raw findings into a single ranked list:
 - **Rank by severity**, not by lens. Blockers first, then material, then nits.
 - **Drop what a human already said** in the PR's existing comments, unless the
   point is still unaddressed and worth reinforcing.
+- **Drop copies of an existing pattern** in the same file. Keep one only if the
+  copy itself breaks something.
+- **Check the stack.** If the target is a PR, list the PRs stacked on it with
+  `gh pr list --base <head branch>`. Follow the chain upward.
+  - If a later PR resolves a finding, drop it. Example: a field unused here
+    that a later PR reads.
+  - If a later PR makes a finding live, keep it. Name that PR and line.
+    Example: a later PR wires the code into startup.
 
 ## 3. Report
+
+Pick the output by who reads it.
+
+- If another skill ran this one, use the **agent report**.
+- If this run is a dispatched subagent, use the **agent report**.
+- If the user invoked it directly, use the **comment drafts**.
+- If `--format=agent` or `--format=comments` is given, it overrides the rules
+  above.
+
+Both outputs carry the same verified findings. Only the shape and voice differ.
+
+### Agent report
 
 ```
 ## review — <target> [APPROVE | COMMENTS | BLOCKERS]
@@ -145,6 +165,55 @@ Before you show the report, unslop it:
 
 The template wins on shape: the `—` and `→` separators, the `[lens]` tag, one
 line per finding. Unslop governs the words between them.
+
+### Comment drafts
+
+The user posts these by hand on the PR. Never post them yourself.
+
+Before drafting:
+
+- Fetch the PR's head SHA again. If it moved since step 0, say what changed.
+  Re-verify every finding against the new head.
+- Read [unslop](../unslop/SKILL.md).
+
+Shape:
+
+1. Write a one or two sentence summary for the review body.
+2. Write one comment per finding. Fixes come first, then `nit:` items.
+3. Head each comment with the file path and line, e.g. `criteria/iqx/client.ts` line 142.
+   - Make the path relative to the package root, the nearest `package.json`,
+     `go.mod`, or `pyproject.toml`.
+   - Use the line number in the new file at the current head. The user
+     clicks it in "Files changed".
+4. List the findings left out, one line each with the reason. This covers
+   stack-resolved, already-raised, and pattern-copy drops.
+
+If the target is not a PR, skip the review-body summary. Keep the rest.
+
+Voice of each comment:
+
+- Write like a teammate. Short, casual, first person, one to three sentences.
+- Say what breaks, with a concrete input or case.
+- Suggest the fix, often as a question: "Could we...?", "Should this be...?"
+- If the fix is a judgment call, say so in one short clause. Don't defend it.
+- If an item is minor, prefix it with `nit:`.
+- If an item can wait, mark it "fine as a follow-up".
+- No em dashes, no mid-sentence colons, no bold, no headers inside a comment.
+- No review jargon. Never write "failure scenario", "material", "lens",
+  "blocker", or "severity".
+- Don't explain the review process.
+
+What good looks like:
+
+```
+`criteria/iqx/client.ts` line 142
+If the upstream returns an empty `items` array this throws on `items[0].id`
+instead of returning null. Could we guard it and return early?
+
+`criteria/iqx/types.ts` line 18
+nit: `respData` reads a bit vague next to `IqxResponse`, maybe `response`?
+Fine as a follow-up.
+```
 
 ## 4. Fix — only when asked
 
