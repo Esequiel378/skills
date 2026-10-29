@@ -195,6 +195,15 @@ Shape:
 4. List the findings left out, one line each with the reason. This covers
    stack-resolved, already-raised, and pattern-copy drops.
 
+Put each paste-ready text in its own fenced ` ```markdown ` block. The user
+copies the box straight into GitHub.
+
+- Box the review-body summary.
+- Box each comment body.
+- Keep the path and line heading outside the box. The user navigates by it and
+  doesn't paste it.
+- If a comment body contains a code fence, open the box with four backticks.
+
 If the target is not a PR, skip the review-body summary. Keep the rest.
 
 Voice of each comment:
@@ -212,15 +221,27 @@ Voice of each comment:
 
 What good looks like:
 
+````
+Review body:
+
+```markdown
+Mostly looks good. One crash on empty responses worth fixing before merge.
 ```
+
 `criteria/iqx/client.ts` line 142
+
+```markdown
 If the upstream returns an empty `items` array this throws on `items[0].id`
 instead of returning null. Could we guard it and return early?
+```
 
 `criteria/iqx/types.ts` line 18
+
+```markdown
 nit: `respData` reads a bit vague next to `IqxResponse`, maybe `response`?
 Fine as a follow-up.
 ```
+````
 
 ## 4. Fix — only when asked
 
