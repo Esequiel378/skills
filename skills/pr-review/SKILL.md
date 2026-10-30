@@ -48,6 +48,9 @@ Dispatch **parallel sub-agents** (superpowers `dispatching-parallel-agents`), on
 per lens, each reading the same resolved diff. They don't mutate, so this is safe
 to run wide.
 
+Dispatch each lens on Sonnet at medium effort, per spec-write's
+[routing table](../spec-write/SKILL.md#model-routing).
+
 If step 0 found existing comments, pass them in each lens's prompt. Tell the
 lens to skip points they already raise.
 

@@ -4,6 +4,7 @@
     "./skills/architecture-hexagonal",
     "./skills/architecture-improve",
     "./skills/architecture-review",
+    "./skills/batch-orchestrate",
     "./skills/codebase-design",
     "./skills/commit-write",
     "./skills/domain-modeling",

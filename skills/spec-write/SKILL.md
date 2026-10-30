@@ -61,8 +61,31 @@ skipped or deviated on, and `git status -sb`.
 - If `ORCA_TERMINAL_HANDLE` is set, you are in an Orca terminal. Dispatch through Orca (below).
 - If the dispatch tool supports worktree isolation, use it.
 - Otherwise, run `git worktree add <path> -b <branch> <base>` yourself first. Name that path in the spec.
-- Pick the model by the work. Mechanical edits go to the smallest model. Features go to the mid-size model.
+- Pick the model and effort from the routing table below.
 - Never give a worker a task that needs a design call. That task stays with you.
+
+### Model routing
+
+Opus stays where judgment lives. Writing, publishing and merging never run on it.
+
+| Task | Claude | Codex | Effort |
+| --- | --- | --- | --- |
+| Lead: planning, lanes, design calls, settling review disagreements | Opus 5.5 | — | high |
+| Research that needs judgment: comparing approaches, unfamiliar systems | Opus 5.5 | `gpt-6-astra` | medium |
+| Research lookup: docs, API facts, a code survey | Sonnet 5.5 | `gpt-6.1-sol` | medium |
+| One fact, an inventory, a grep | Haiku 5.5 | `gpt-6-luna` | low |
+| Hard implementation: concurrency, determinism, cross-cutting change | Opus 5.5 | `gpt-6-astra` | high |
+| Feature implementation with tdd | Sonnet 5.5 | `gpt-6.1-sol` | high |
+| Straightforward implementation: one module, a clear pattern to copy | Sonnet 5.5 | `gpt-6.1-terra` | medium |
+| Mechanical edit: rename, config, docs | Haiku 5.5 | `gpt-6-luna` | medium |
+| Review lenses | Sonnet 5.5 | `gpt-6.1-sol` | medium |
+| ticket-write drafts, commit-write, pr-describe | Sonnet 5.5 | `gpt-6.1-sol` | low |
+| Push, open PR, merge, peek at CI | Haiku 5.5 | `gpt-6-luna` | low |
+
+The lead is always Claude. Codex workers exist only through Orca (`--agent codex`).
+
+**Escalation.** If a worker fails twice for the same reason, retry it once one tier up:
+Haiku to Sonnet, Sonnet to Opus. If it still fails, the task comes back to you.
 
 ### Through Orca
 
