@@ -21,6 +21,7 @@
     "./skills/prompt-improve-review",
     "./skills/release-scaffold",
     "./skills/retro",
+    "./skills/spec-write",
     "./skills/sql-review",
     "./skills/tdd",
     "./skills/ticket-write",
