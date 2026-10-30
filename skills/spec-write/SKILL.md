@@ -58,7 +58,7 @@ skipped or deviated on, and `git status -sb`.
 
 ## 3. Dispatch
 
-- If `orca` is on `PATH`, dispatch through Orca (below).
+- If `ORCA_TERMINAL_HANDLE` is set, you are in an Orca terminal. Dispatch through Orca (below).
 - If the dispatch tool supports worktree isolation, use it.
 - Otherwise, run `git worktree add <path> -b <branch> <base>` yourself first. Name that path in the spec.
 - Pick the model by the work. Mechanical edits go to the smallest model. Features go to the mid-size model.
@@ -66,16 +66,33 @@ skipped or deviated on, and `git status -sb`.
 
 ### Through Orca
 
-Orca gives each agent a terminal, a worktree, and a shared mailbox. The mailbox
-stores messages but never pushes them. A lead that isn't waiting on it hears nothing.
+Orca supervises the worker: it creates the Task and Dispatch, injects a preamble
+with the worker's `ask` and `worker_done` commands, and holds reports in the
+Run's inbox until you check it. A lead that isn't waiting on the inbox hears nothing.
 
-- Run `orca orchestration --help` once per session. Confirm the flags below before relying on them.
-- Create the worktree with `orca worktree create`, not `git worktree add`. Name its path in the spec.
-- Replace the template's **Report** line with: `Send the report with orca orchestration send --to <your handle> --subject "<branch>: done" --body "<report>".`
-- After dispatch, run `orca orchestration check --unread --wait` in the background.
-- After every wake, restart that watcher in the same turn. A missed restart drops every later report.
-- After step 4 passes, close the worker with `orca terminal close --terminal <worker handle>`. Close by terminal, not by tab. A tab close leaves the agent running.
-- Stop or kill only handles you launched. Never bulk-close.
+- Run `orca skills get orchestration` once per session and follow it. It matches
+  the installed Orca version. Where it disagrees with this list, it wins.
+- Create the worktree first, so the spec can name its path and branch:
+  `orca worktree create --name <name> --branch <branch> --base-branch <base> --json`.
+- Adjust the template for Orca:
+  - Skills line: add `orchestration`.
+  - **Workspace**: allow one write outside the worktree, to a report path outside the repo.
+  - **Out of scope**: exempt Orca messages to the lead from "no messages".
+  - **Stop and ask if**: end with "Ask with the preamble's `ask` command, then wait for the reply."
+  - **Report**: end with "Write it to `<report path>`. Send `worker_done` from your
+    preamble with `--outcome` and `--report-path <report path>`." Orca limits the
+    `worker_done` body to a three-sentence summary, so the full report must be in the file.
+- Bind a Run once: `orca orchestration run-create --objective "<objective>" --json`.
+- Start the worker with the filled spec as its task:
+  `orca orchestration worker-start --spec "<spec>" --worktree path:<worktree path> --agent claude --model <id> --json`.
+  If it exits non-zero, don't relaunch. Read its receipt.
+- Wait with `orca orchestration check --wait --types worker_done,escalation,question --timeout-ms 900000 --json`
+  in the background. Answer questions with `orca orchestration reply --id <message id> --body "<answer>"`.
+  A timeout is a checkpoint, not a failure.
+- After step 4, run `orca orchestration worker-release --dispatch <dispatch id> --json`,
+  then ack the batch with `check --ack <delivery id>`. Never use `orca terminal close`
+  on a supervised worker.
+- Stop or release only Dispatches you started.
 
 ## 4. Verify before believing
 
