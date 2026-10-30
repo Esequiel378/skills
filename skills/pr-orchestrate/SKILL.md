@@ -88,6 +88,27 @@ exact `gh pr create` command that would open it. Hand off there. The user opens
 it. Honor the repo's git attribution rules — no self-attribution in commits, PR
 title, or body.
 
+## Model routing
+
+If you run on Opus, hand cheaper work down per spec-write's
+[routing table](../spec-write/SKILL.md#model-routing):
+
+- Dispatch commit-write and pr-describe to a Sonnet subagent at low effort.
+- pr-review already runs its lenses on Sonnet.
+
+## Worker mode
+
+A lead runs this skill inside a worker, usually from
+[batch-orchestrate](../batch-orchestrate/SKILL.md). The spec says "worker mode".
+These overrides replace the stages above:
+
+- **Stage 0:** the ticket is settled. Don't run ticket-write. Don't create a branch or worktree. The spec names them.
+- **Questions:** if the spec gives an `ask` command, ask there. Otherwise take the ticket's default, or the most conservative option.
+- Record every choice the ticket didn't settle under "Decisions taken" in the PR body.
+- **Stages 2-3:** if the spec says the caller reviews, skip them.
+- **Stage 4:** commit. Write the PR title and body to a file outside the repo. Never push. Never open a PR.
+- Report as the spec's Report section says.
+
 ## End state
 
 A committed branch and a ready PR description, with the reviews already run and

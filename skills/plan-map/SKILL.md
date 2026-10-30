@@ -114,7 +114,7 @@ The user invokes with a loose idea.
 5. Create the tickets you can specify now as child issues of the map.
 6. Wire the blocking edges in a second pass. Issues need numbers before they can reference each other.
 7. Leave everything you can't yet specify in **Not yet specified**.
-8. For each `research` ticket you just created, dispatch a subagent to resolve it in parallel. Capture its findings on a throwaway `research/<name>` branch. Add a link to those findings on the ticket.
+8. For each `research` ticket you just created, dispatch a subagent to resolve it in parallel. Pick its model from spec-write's [routing table](../spec-write/SKILL.md#model-routing). Capture its findings on a throwaway `research/<name>` branch. Add a link to those findings on the ticket.
 9. Stop. Charting is one session's work. It hand-resolves nothing.
 
 ### Work through the map
@@ -133,6 +133,7 @@ The user invokes with a map, by URL or number. A ticket is optional. Without one
 10. Graduate any fog the answer made specifiable. Delete each graduated patch from **Not yet specified** so it lives only as its new ticket.
 11. If the answer reveals a ticket sits beyond the destination, rule it out of scope. Don't resolve it on the route.
 12. If the decision invalidates other parts of the map, update or delete those tickets.
+13. If the map has no open tickets and its destination is filed build tickets, show `/batch-orchestrate <build ticket refs>`. Block for the user's go.
 
 The user may run unblocked tickets in parallel. Expect other sessions to edit the tracker concurrently.
 
