@@ -57,6 +57,7 @@ criterion at a time. Don't skip the failing-test-first step.
 If you dispatch the implementation to a subagent, run
 [spec-write](../spec-write/SKILL.md) to brief it. The ticket's acceptance
 criteria become the spec's Done-when commands. Verify its report before stage 2.
+The worker's worktree replaces the branch from stage 0. Run stages 2-4 inside it.
 
 ### 2-3. Review and loop — hand off to pr-review
 
