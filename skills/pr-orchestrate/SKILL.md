@@ -54,6 +54,10 @@ question is answered.
 Run [tdd](../tdd/SKILL.md) on the ticket: red-green-refactor, one acceptance
 criterion at a time. Don't skip the failing-test-first step.
 
+If you dispatch the implementation to a subagent, run
+[spec-write](../spec-write/SKILL.md) to brief it. The ticket's acceptance
+criteria become the spec's Done-when commands. Verify its report before stage 2.
+
 ### 2-3. Review and loop — hand off to pr-review
 
 Run [pr-review](../pr-review/SKILL.md) over the working diff (`git diff
