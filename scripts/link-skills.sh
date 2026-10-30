@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Links every skill in this repo into ~/.claude/skills as a symlink, so the
-# local Claude CLI picks them up and editing a skill here is instantly live.
+# Links every skill in this repo into the global skill dirs of Claude Code
+# (~/.claude/skills) and Codex (~/.agents/skills) as symlinks, so both CLIs
+# pick them up and editing a skill here is instantly live.
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-DEST="$HOME/.claude/skills"
+DESTS=("$HOME/.claude/skills" "$HOME/.agents/skills")
 
-# If ~/.claude/skills is itself a symlink into this repo, linking would write
-# the per-skill symlinks back into the repo. Bail out instead of polluting it.
-if [ -L "$DEST" ]; then
+# If a skill dir is itself a symlink into this repo, linking would write the
+# per-skill symlinks back into the repo. Bail out instead of polluting it.
+for DEST in "${DESTS[@]}"; do
+  [ -L "$DEST" ] || continue
   resolved="$(readlink "$DEST")"
   case "$resolved" in
     "$REPO"|"$REPO"/*)
@@ -18,9 +20,7 @@ if [ -L "$DEST" ]; then
       exit 1
       ;;
   esac
-fi
-
-mkdir -p "$DEST"
+done
 
 # --- migrations -------------------------------------------------------------
 # Skills were renamed to a {entity}-{action} scheme. A machine that installed
@@ -44,16 +44,18 @@ migrate_data_dir() {
 migrate_data_dir improve-prompt prompt-improve
 
 # Symlinks pointing into this repo at a path that no longer exists are skills
-# that were renamed or deleted. Anything else in $DEST is left alone.
-for link in "$DEST"/*; do
-  [ -L "$link" ] || continue
-  target="$(readlink "$link")"
-  case "$target" in "$REPO"/*) ;; *) continue ;; esac
-  if [ ! -e "$target" ]; then
-    rm "$link"
-    echo "pruned stale $(basename "$link") -> $target"
-  fi
-done
+# that were renamed or deleted. Anything else in the skill dir is left alone.
+prune_stale() {
+  for link in "$1"/*; do
+    [ -L "$link" ] || continue
+    target="$(readlink "$link")"
+    case "$target" in "$REPO"/*) ;; *) continue ;; esac
+    if [ ! -e "$target" ]; then
+      rm "$link"
+      echo "pruned stale $(basename "$link") -> $target"
+    fi
+  done
+}
 # --- end migrations ---------------------------------------------------------
 
 # Git Bash's plain `ln -s` silently copies the directory instead of linking it,
@@ -76,24 +78,29 @@ link_dir() {
   esac
 }
 
-find "$REPO/skills" -name SKILL.md -not -path '*/node_modules/*' -print0 |
-while IFS= read -r -d '' skill_md; do
-  src="$(dirname "$skill_md")"
-  name="$(basename "$src")"
-  target="$DEST/$name"
+for DEST in "${DESTS[@]}"; do
+  mkdir -p "$DEST"
+  prune_stale "$DEST"
+  find "$REPO/skills" -name SKILL.md -not -path '*/node_modules/*' -print0 |
+  while IFS= read -r -d '' skill_md; do
+    src="$(dirname "$skill_md")"
+    name="$(basename "$src")"
+    target="$DEST/$name"
 
-  # Replace a pre-existing real directory with a symlink to the repo copy.
-  if [ -e "$target" ] && [ ! -L "$target" ]; then
-    rm -rf "$target"
-  fi
+    # Replace a pre-existing real directory with a symlink to the repo copy.
+    if [ -e "$target" ] && [ ! -L "$target" ]; then
+      rm -rf "$target"
+    fi
 
-  link_dir "$src" "$target"
-  echo "linked $name -> $src"
+    link_dir "$src" "$target"
+    echo "linked $name -> $target"
+  done
 done
 
 # --- plugins ----------------------------------------------------------------
 # Third-party plugins this setup depends on. Both commands are idempotent, so
 # re-running is free. One line per plugin: "<repo> <plugin>@<marketplace>".
+command -v claude >/dev/null || { echo "skipped Claude plugins: claude not on PATH"; exit 0; }
 while read -r repo plugin; do
   [ -n "$repo" ] || continue
   claude plugin marketplace add "$repo" >/dev/null

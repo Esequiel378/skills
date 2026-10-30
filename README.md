@@ -38,13 +38,13 @@ Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.
 
 ### Local (symlink — recommended for the author)
 
-Symlinks each skill into `~/.claude/skills/`, so the local Claude CLI picks them up and editing a skill here is instantly live:
+Symlinks each skill into `~/.claude/skills/` (Claude Code) and `~/.agents/skills/` (Codex), so both CLIs pick them up and editing a skill here is instantly live:
 
 ```bash
 make install          # or: ./scripts/link-skills.sh
 ```
 
-Safe to re-run. It also prunes symlinks left behind by renamed or deleted skills, and migrates any `~/.claude/` data directory whose skill was renamed — so pulling and running `make install` is all another machine needs. Third-party plugins this setup depends on (currently `healthcare@healthcare`) are installed by the same command.
+Safe to re-run. It also prunes symlinks left behind by renamed or deleted skills, and migrates any `~/.claude/` data directory whose skill was renamed — so pulling and running `make install` is all another machine needs. Third-party plugins this setup depends on (currently `healthcare@healthcare`) are installed by the same command when `claude` is on `PATH`.
 
 ### As a Claude Code plugin
 
