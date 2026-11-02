@@ -105,6 +105,20 @@ if command -v uv >/dev/null; then
   uv tool install --upgrade graphifyy -q
   graphify install --platform claude >/dev/null
   graphify install --platform agents >/dev/null
+  # `graphify claude install` is per project: it writes ./CLAUDE.md and
+  # ./.claude/settings.json. Point the same two writers at the user-level
+  # files so every project gets the rules and the PreToolUse hooks, which do
+  # nothing in a repo without graphify-out/.
+  uv tool run --from graphifyy python - <<'PY'
+from pathlib import Path
+from graphify import install as g
+md = Path.home() / ".claude" / "CLAUDE.md"
+text, nl = g._read_keep_newline(md) if md.exists() else ("", "\n")
+new = g._replace_or_append_section(text, g._CLAUDE_MD_MARKER, g._always_on("claude-md")) if text else g._always_on("claude-md")
+if new != text:
+    g._write_keep_newline(md, new, nl)
+g._install_claude_hook(Path.home())
+PY
   echo "installed $(graphify --version)"
 else
   echo "skipped graphify: uv not on PATH"
