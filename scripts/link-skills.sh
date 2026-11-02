@@ -97,6 +97,19 @@ for DEST in "${DESTS[@]}"; do
   done
 done
 
+# --- graphify ---------------------------------------------------------------
+# graphify ships its own skill, so it is installed from PyPI rather than linked
+# from here. `graphify install` writes that skill and the global CLAUDE.md
+# section for each CLI; re-running upgrades both to the package's version.
+if command -v uv >/dev/null; then
+  uv tool install --upgrade graphifyy -q
+  graphify install --platform claude >/dev/null
+  graphify install --platform agents >/dev/null
+  echo "installed $(graphify --version)"
+else
+  echo "skipped graphify: uv not on PATH"
+fi
+
 # --- plugins ----------------------------------------------------------------
 # Third-party plugins this setup depends on. Both commands are idempotent, so
 # re-running is free. One line per plugin: "<repo> <plugin>@<marketplace>".
