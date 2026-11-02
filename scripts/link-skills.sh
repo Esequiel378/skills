@@ -105,19 +105,23 @@ if command -v uv >/dev/null; then
   uv tool install --upgrade graphifyy -q
   graphify install --platform claude >/dev/null
   graphify install --platform agents >/dev/null
-  # `graphify claude install` is per project: it writes ./CLAUDE.md and
-  # ./.claude/settings.json. Point the same two writers at the user-level
-  # files so every project gets the rules and the PreToolUse hooks, which do
-  # nothing in a repo without graphify-out/.
+  # `graphify claude install` and `graphify codex install` are per project:
+  # they write ./CLAUDE.md or ./AGENTS.md, plus hooks. Point the same writers
+  # at the user-level files so every project gets the rules. Claude's
+  # PreToolUse hooks do nothing in a repo without graphify-out/. Codex's hook
+  # is a no-op by design, so AGENTS.md is all Codex needs.
   uv tool run --from graphifyy python - <<'PY'
 from pathlib import Path
 from graphify import install as g
-md = Path.home() / ".claude" / "CLAUDE.md"
-text, nl = g._read_keep_newline(md) if md.exists() else ("", "\n")
-new = g._replace_or_append_section(text, g._CLAUDE_MD_MARKER, g._always_on("claude-md")) if text else g._always_on("claude-md")
-if new != text:
-    g._write_keep_newline(md, new, nl)
-g._install_claude_hook(Path.home())
+home = Path.home()
+for md, marker, kind in ((home / ".claude" / "CLAUDE.md", g._CLAUDE_MD_MARKER, "claude-md"),
+                         (home / ".codex" / "AGENTS.md", g._AGENTS_MD_MARKER, "agents-md")):
+    text, nl = g._read_keep_newline(md) if md.exists() else ("", "\n")
+    new = g._replace_or_append_section(text, marker, g._always_on(kind)) if text else g._always_on(kind)
+    if new != text:
+        md.parent.mkdir(parents=True, exist_ok=True)
+        g._write_keep_newline(md, new, nl)
+g._install_claude_hook(home)
 PY
   echo "installed $(graphify --version)"
 else
