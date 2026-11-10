@@ -53,7 +53,10 @@ question is answered.
 
 If the ticket is a bug (batch-orchestrate's `kind: fix`), run
 [bug-diagnose](../bug-diagnose/SKILL.md) before tdd.
-Its regression test becomes tdd's first red test.
+Carry its regression test into tdd as the first test.
+If bug-diagnose already applied the fix, that test is green.
+Then write the remaining criteria's tests red-first.
+If bug-diagnose documented no seam, write tdd's first red test yourself.
 
 Run [tdd](../tdd/SKILL.md) on the ticket: red-green-refactor, one acceptance
 criterion at a time. Don't skip the failing-test-first step.
