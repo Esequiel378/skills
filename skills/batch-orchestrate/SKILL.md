@@ -15,7 +15,7 @@ Two runners carry out the same plan:
 
 | | Orca (home) | Workflow (work) |
 |---|---|---|
-| When | `ORCA_TERMINAL_HANDLE` is set | otherwise |
+| When | `ORCA_TERMINAL_HANDLE` or `ORCA_AGENT_SESSION_SPAWN_TOKEN` is set | otherwise |
 | Workers | Claude or Codex, one terminal tab each | Claude only, `batch.js` agents |
 | Questions | Workers `ask`, you answer | None: the ticket's default, logged |
 | Review | The other vendor runs `pr-review` | Three lenses on Sonnet, in `batch.js` |

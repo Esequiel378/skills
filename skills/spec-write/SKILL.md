@@ -58,7 +58,8 @@ skipped or deviated on, and `git status -sb`.
 
 ## 3. Dispatch
 
-- If `ORCA_TERMINAL_HANDLE` is set, you are in an Orca terminal. Dispatch through Orca (below).
+- If `ORCA_TERMINAL_HANDLE` or `ORCA_AGENT_SESSION_SPAWN_TOKEN` is set, you are in Orca. Dispatch through Orca (below).
+  An Orca chat tab sets only the spawn token.
 - If the dispatch tool supports worktree isolation, use it.
 - Otherwise, run `git worktree add <path> -b <branch> <base>` yourself first. Name that path in the spec.
 - Pick the model and effort from the routing table below.
