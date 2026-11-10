@@ -5,6 +5,7 @@
     "./skills/architecture-improve",
     "./skills/architecture-review",
     "./skills/batch-orchestrate",
+    "./skills/bug-diagnose",
     "./skills/codebase-design",
     "./skills/commit-write",
     "./skills/domain-modeling",
@@ -27,6 +28,7 @@
     "./skills/sql-review",
     "./skills/tdd",
     "./skills/ticket-write",
-    "./skills/unslop"
+    "./skills/unslop",
+    "./skills/work-verify"
   ]
 }

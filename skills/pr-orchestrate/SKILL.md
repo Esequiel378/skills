@@ -42,9 +42,8 @@ Then flag blockers as a single batched question set and **block until answered**
 - Unknowns in scope, acceptance criteria, or affected surfaces.
 - Missing anchors — a path/endpoint/key the ticket assumes but you can't verify.
 - Branch: confirm we are on a fresh branch off `main`. If on `main`, create one
-  first. If the environment supports worktrees, run
-  `superpowers:using-git-worktrees` to keep the ticket's work off the current
-  workspace. Otherwise create a plain fresh branch.
+  first. If the environment supports worktrees, create one for the ticket's work
+  to keep it off the current workspace. Otherwise create a plain fresh branch.
 
 Do not proceed to stage 1 until the ticket is INVEST-complete and every
 question is answered.

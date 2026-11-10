@@ -44,7 +44,7 @@ Two checks that are cheap here and expensive later:
 
 ## 1. Fan out — the lenses, in parallel
 
-Dispatch **parallel sub-agents** (superpowers `dispatching-parallel-agents`), one
+Dispatch **parallel sub-agents** in a single message, one
 per lens, each reading the same resolved diff. They don't mutate, so this is safe
 to run wide.
 
