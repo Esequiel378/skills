@@ -128,6 +128,49 @@ else
   echo "skipped graphify: uv not on PATH"
 fi
 
+# --- media MCP --------------------------------------------------------------
+# scripts/media-mcp fetches its own credentials, so registering the launcher is
+# all a machine needs. Reads and requests are pre-approved, config and
+# qbittorrent-add tools are denied, every other media tool prompts.
+if command -v claude >/dev/null; then
+  claude mcp remove --scope user media >/dev/null 2>&1 || true
+  claude mcp add --scope user media -- "$REPO/scripts/media-mcp" >/dev/null
+  python3 - <<'PY'
+import json
+import os
+from pathlib import Path
+
+path = Path(os.path.realpath(Path.home() / ".claude" / "settings.json"))
+data = json.loads(path.read_text()) if path.exists() else {}
+
+allow = """seerr_search seerr_list_requests seerr_request_status seerr_request_movie
+seerr_request_tv radarr_search radarr_list_movies radarr_get_movie radarr_queue
+radarr_list_quality_profiles sonarr_search sonarr_list_series sonarr_get_series
+sonarr_queue sonarr_list_quality_profiles sonarr_list_episode_files sonarr_upcoming
+qbt_list_torrents qbt_torrent_details qbt_torrent_files qbt_transfer_info""".split()
+deny = """qbt_add qbt_add_magnet qbt_add_torrent_file qbt_set_category qbt_create_category
+qbt_add_tags qbt_remove_tags radarr_set_movie_tags sonarr_set_series_tags
+radarr_set_quality_profile_qualities sonarr_set_quality_profile_qualities
+radarr_set_quality_definition sonarr_set_quality_definition""".split()
+
+perms = data.setdefault("permissions", {})
+changed = False
+for key, names in (("allow", allow), ("deny", deny)):
+    entries = perms.setdefault(key, [])
+    for name in names:
+        entry = "mcp__media__" + name
+        if entry not in entries:
+            entries.append(entry)
+            changed = True
+if changed:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+PY
+  echo "registered media MCP"
+else
+  echo "skipped media MCP: claude not on PATH"
+fi
+
 # --- plugins ----------------------------------------------------------------
 # Third-party plugins this setup depends on. Both commands are idempotent, so
 # re-running is free. One line per plugin: "<repo> <plugin>@<marketplace>".
