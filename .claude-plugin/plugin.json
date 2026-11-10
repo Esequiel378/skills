@@ -20,6 +20,7 @@
     "./skills/pr-review-po",
     "./skills/pr-review-sl",
     "./skills/prompt-improve",
+    "./skills/prototype-build",
     "./skills/release-scaffold",
     "./skills/retro",
     "./skills/spec-write",
