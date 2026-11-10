@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# bumping this tag upgrades the media MCP on the next launch
+ARRSTACK_MCP_REF="v0.2.0-esequiel.1"
+
+ENV_FILE=/run/ws-secrets/media.env
+SECRETS_FILE="${ZX_SERVER_DIR:-$HOME/Projects/personal/nix-server}/secrets/secrets.yaml"
+
+if [ -r "$ENV_FILE" ]; then
+  set -a
+  . "$ENV_FILE"
+  set +a
+else
+  sops_bin="$(command -v sops || true)"
+  [ -n "$sops_bin" ] || { [ -x /opt/homebrew/bin/sops ] && sops_bin=/opt/homebrew/bin/sops; } || true
+  if [ -z "$sops_bin" ]; then
+    echo "media-mcp: could not read $ENV_FILE and cannot decrypt $SECRETS_FILE without sops: install sops (brew install sops)" >&2
+    exit 1
+  fi
+  if [ ! -r "$SECRETS_FILE" ] || ! json="$("$sops_bin" -d --output-type json --extract '["media"]' "$SECRETS_FILE" 2>/dev/null)"; then
+    echo "media-mcp: could not read secrets from $ENV_FILE or decrypt $SECRETS_FILE (set ZX_SERVER_DIR to the nix-server checkout)" >&2
+    exit 1
+  fi
+  exports="$(printf '%s' "$json" | python3 -c '
+import json, shlex, sys
+m = json.load(sys.stdin)
+env = {
+    "SEERR_URL": "https://seerr.litoral.lat",
+    "SEERR_API_KEY": m["seerr-api-key"],
+    "RADARR_URL": "https://radarr.litoral.lat",
+    "RADARR_API_KEY": m["radarr-api-key"],
+    "SONARR_URL": "https://sonarr.litoral.lat",
+    "SONARR_API_KEY": m["sonarr-api-key"],
+    "QBT_URL": "https://qbit.litoral.lat",
+    "QBT_USER": m["qbittorrent-user"],
+    "QBT_PASS": m["qbittorrent-pass"],
+}
+for k, v in env.items():
+    print("export %s=%s" % (k, shlex.quote(str(v))))
+')" || { echo "media-mcp: $SECRETS_FILE has no usable media section" >&2; exit 1; }
+  eval "$exports"
+fi
+
+export ENABLED_SERVICES=seerr,radarr,sonarr,qbittorrent ALLOW_DESTRUCTIVE=true
+exec uvx --from "git+https://github.com/Esequiel378/arrstack-mcp@${ARRSTACK_MCP_REF}" arrstack-mcp

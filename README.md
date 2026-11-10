@@ -51,6 +51,16 @@ Safe to re-run. It also prunes symlinks left behind by renamed or deleted skills
 
 This repo ships a [`.claude-plugin/plugin.json`](./.claude-plugin/plugin.json), so it can be installed as a plugin (e.g. via a marketplace entry pointing at this repo, or by cloning and adding it as a local plugin).
 
+## Media MCP
+
+`make install` registers a user-scope `media` MCP server (the [arrstack-mcp](https://github.com/Esequiel378/arrstack-mcp) tools for Seerr, Radarr, Sonarr and qBittorrent) that launches [`scripts/media-mcp`](./scripts/media-mcp), and merges its tool permissions into `~/.claude/settings.json`. It needs `claude` and `python3` on `PATH`, and re-running is safe.
+
+Secrets are never written to disk. On `ws-esequiel` the launcher sources `/run/ws-secrets/media.env`. On the Mac it decrypts the `media` section of `$ZX_SERVER_DIR/secrets/secrets.yaml` (default `~/Projects/personal/nix-server`) with `sops`, so that checkout must be current. With neither source it exits with one line saying so.
+
+Permissions: read-only tools and Seerr requests are allowed, tools that change the qBittorrent queue, categories, tags or quality config are denied, and every other write prompts. The lists live in the media MCP section of [`scripts/link-skills.sh`](./scripts/link-skills.sh).
+
+To upgrade the MCP, bump `ARRSTACK_MCP_REF` at the top of `scripts/media-mcp`.
+
 ## Utilities
 
 ```bash
