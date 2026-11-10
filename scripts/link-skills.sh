@@ -164,7 +164,7 @@ for key, names in (("allow", allow), ("deny", deny)):
             changed = True
 if changed:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2) + "\n")
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
 PY
   echo "registered media MCP"
 else
