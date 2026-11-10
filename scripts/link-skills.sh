@@ -179,16 +179,3 @@ PY
 else
   echo "skipped media MCP: claude not on PATH"
 fi
-
-# --- plugins ----------------------------------------------------------------
-# Third-party plugins this setup depends on. Both commands are idempotent, so
-# re-running is free. One line per plugin: "<repo> <plugin>@<marketplace>".
-command -v claude >/dev/null || { echo "skipped Claude plugins: claude not on PATH"; exit 0; }
-while read -r repo plugin; do
-  [ -n "$repo" ] || continue
-  claude plugin marketplace add "$repo" >/dev/null
-  claude plugin install "$plugin" >/dev/null
-  echo "installed $plugin"
-done <<'PLUGINS'
-anthropics/healthcare healthcare@healthcare
-PLUGINS
