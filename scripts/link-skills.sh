@@ -97,6 +97,15 @@ for DEST in "${DESTS[@]}"; do
   done
 done
 
+# --- STYLE.md ---------------------------------------------------------------
+# The global CLAUDE.md imports ~/.claude/STYLE.md, and installed skills link
+# ../../STYLE.md. Both resolve here. ln -sfn replaces a real file at the target.
+for dir in "$HOME/.claude" "$HOME/.agents"; do
+  mkdir -p "$dir"
+  ln -sfn "$REPO/STYLE.md" "$dir/STYLE.md"
+  echo "linked STYLE.md -> $dir/STYLE.md"
+done
+
 # --- graphify ---------------------------------------------------------------
 # graphify ships its own skill, so it is installed from PyPI rather than linked
 # from here. `graphify install` writes that skill and the global CLAUDE.md
