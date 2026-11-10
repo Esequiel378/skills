@@ -51,7 +51,7 @@ later slices widen it. Feature-flag the incomplete UI rather than holding the PR
    draft. Outside it, ask the user for the anchors, or leave a clearly-marked
    `TODO(anchor)`. **Never guess a path or API** — a wrong anchor is worse than none.
    If institutional context (prior PRs, decisions, related tickets) would sharpen the
-   ticket, dispatch a `context_research` call in parallel.
+   ticket, and a research tool or MCP is connected, dispatch it in parallel.
 
 3. **Ask only the essentials you can't infer** — one message, batched. Usually:
    who's the user / what's the value, and any acceptance edge cases that aren't
