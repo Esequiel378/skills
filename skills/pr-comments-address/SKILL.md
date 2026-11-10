@@ -62,9 +62,9 @@ hunk; the surrounding lines are where wrong verdicts come from. Then assign:
 | **move** | Valid, but belongs to a different PR → name which one |
 | **reject** | Wrong or moot → cite the evidence (code, test, doc) that says so |
 
-- **Stacks:** list the PRs stacked on this one with
-  `gh pr list --base <head branch>`, then follow the chain, as
-  [pr-review](../pr-review/SKILL.md) does. A comment left on this PR about code
+- **Stacks:** if the PR's `baseRefName` isn't the default branch, the PR is a stack layer.
+  Find the parent PR with `gh pr list --head <baseRefName>`.
+  List child PRs with `gh pr list --base <head branch>`, as [pr-review](../pr-review/SKILL.md) does. A comment left on this PR about code
   introduced in a *parent* layer is a **move** — fixing it here buries the fix
   in the wrong diff and dooms the restack. Name the layer it belongs to.
 - **Scope:** "while you're here, also…" comments that widen the PR beyond its
