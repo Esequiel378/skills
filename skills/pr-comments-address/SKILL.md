@@ -21,17 +21,34 @@ moves; the deliverable here is a dirty tree and a report they can act on.
   - **Inline threads, with resolution state** — REST can't tell you what's
     resolved, so use GraphQL:
     ```bash
-    gh api graphql -f query='query($o:String!,$r:String!,$n:Int!){
-      repository(owner:$o,name:$r){pullRequest(number:$n){
-        reviewThreads(first:100){nodes{isResolved isOutdated path line
-          comments(first:20){nodes{author{login} body}}}}}}}' \
+    gh api graphql -f query='query($o:String!,$r:String!,$n:Int!,$after:String){
+      repository(owner:$o,name:$r){pullRequest(number:$n){author{login}
+        reviewThreads(first:100,after:$after){pageInfo{hasNextPage endCursor}
+          nodes{id isResolved isOutdated path line
+            comments(first:20){pageInfo{hasNextPage endCursor}
+              nodes{author{login} body}}}}}}}' \
       -f o=<owner> -f r=<repo> -F n=<pr>
     ```
+    - If `reviewThreads.pageInfo.hasNextPage` is true, repeat the query with
+      `-f after=<endCursor>`. Stop when it is false.
+    - If a thread's `comments.pageInfo.hasNextPage` is true, query that thread
+      by its node id. Page with `after:` until `hasNextPage` is false.
+      ```bash
+      gh api graphql -f query='query($t:ID!,$after:String){node(id:$t){
+        ... on PullRequestReviewThread{comments(first:20,after:$after){
+          pageInfo{hasNextPage endCursor} nodes{author{login} body}}}}}' \
+        -f t=<thread id>
+      ```
   - **Review bodies** — `gh api repos/<o>/<r>/pulls/<n>/reviews`
   - **Conversation comments** — `gh api repos/<o>/<r>/issues/<n>/comments`
 - Work the **unresolved** threads; skip resolved ones and bot chatter unless the
   user says otherwise. Outdated-but-unresolved threads still count — check
   whether the concern survived the code that outdated them.
+- **Thread state.** Read each thread's last comment before triage.
+  - If the reviewer conceded in it, skip the thread.
+  - If the PR author already answered in it, skip the thread.
+  - If the user asks for all threads, skip nothing.
+  - Record each skipped thread, with the reason, for the report.
 
 ## 1. Triage — every comment gets exactly one verdict
 
@@ -45,8 +62,9 @@ hunk; the surrounding lines are where wrong verdicts come from. Then assign:
 | **move** | Valid, but belongs to a different PR → name which one |
 | **reject** | Wrong or moot → cite the evidence (code, test, doc) that says so |
 
-- **Stacks:** if the branch is part of a stack (use the `gh-stack` skill;
-  `gh stack view` maps the layers), a comment left on this PR about code
+- **Stacks:** if the PR's `baseRefName` isn't the default branch, the PR is a stack layer.
+  Find the parent PR with `gh pr list --head <baseRefName>`.
+  List child PRs with `gh pr list --base <head branch>`, as [pr-review](../pr-review/SKILL.md) does. A comment left on this PR about code
   introduced in a *parent* layer is a **move** — fixing it here buries the fix
   in the wrong diff and dooms the restack. Name the layer it belongs to.
 - **Scope:** "while you're here, also…" comments that widen the PR beyond its
@@ -60,6 +78,13 @@ hunk; the surrounding lines are where wrong verdicts come from. Then assign:
 
 Before finalizing any **reject**, and for any **accept** whose fix is invasive,
 run the [pr-review](../pr-review/SKILL.md) skill scoped to the code in question.
+
+- Collect every contested comment first. Run pr-review once for all of them.
+- Pass `--lenses=<keys>`. Pick the keys that match each contested comment's
+  topic, using pr-review's lens keys. Take the union across comments.
+- Example: a comment about an unchecked input maps to `security`. A comment
+  about a test that proves nothing maps to `po`.
+
 The lenses are the second opinion: one independently re-raising the reviewer's
 point flips a reject to accept; all of them passing the code silently is the
 evidence a rejection can cite. Never reject a human's comment on your own
@@ -74,7 +99,7 @@ authority alone.
 
 ## 4. Report
 
-```
+````
 ## comments — PR #<n> (<addressed>/<total> unresolved threads)
 
 | comment (file:line — author) | verdict | why / what changed |
@@ -84,12 +109,42 @@ authority alone.
 | ... | move | belongs in PR #<m> / stack layer <branch> |
 | ... | reject | <evidence> |
 
+Skipped threads (reviewer conceded or author already answered):
+- <file:line — author>: <reason>
+
 Tests: <command> → <actual result>
-Next moves are yours: review the diff, commit, push, reply.
+
+## reply drafts
+
+<file:line>
+
+```markdown
+<reply>
 ```
 
-Every unresolved comment appears in the table — a comment silently skipped
-reads as a comment addressed.
+Next moves are yours: review the diff, commit, push, reply.
+````
+
+Every unresolved comment appears in the table or in the skipped list — a
+comment silently skipped reads as a comment addressed.
+
+### Reply drafts
+
+Write one reply draft per judged thread. Skipped threads get none.
+
+- Put the `file:line` heading outside the box. Put the reply in its own
+  ` ```markdown ` box.
+- If a reply holds a code fence, open its box with four backticks.
+- Write each reply in the voice of pr-review's
+  [comment drafts](../pr-review/SKILL.md#comment-drafts).
+- If the verdict is **accept**, say what changed.
+- If the verdict is **descope** or **move**, say where it goes.
+- If the verdict is **reject**, give the evidence.
+- Never post a draft.
+
+[pr-comments-draft](../pr-comments-draft/SKILL.md) can't post thread replies
+yet. It adds new comments to a pending review. The user pastes each reply
+into its thread.
 
 ## Guardrails
 
