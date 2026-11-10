@@ -1,6 +1,6 @@
 ---
 name: prompt-improve
-description: Use when the user hands you a rough, vague, or messy prompt and wants it sharpened before acting — triggers on "improve this prompt", "fix my prompt", "/prompt-improve", "clean up this request", or any raw instruction handed over for rewriting. Rewrites the prompt in the context of the current project, shows the rewrite, then executes it.
+description: Use when the user hands you a rough, vague, or messy prompt and wants it sharpened before acting — triggers on "improve this prompt", "fix my prompt", "/prompt-improve", "clean up this request", or any raw instruction handed over for rewriting. Also triggers review mode on "/prompt-improve review", "review my prompt log", "tune prompt-improve". Rewrites the prompt in the context of the current project, shows the rewrite, then executes it.
 ---
 
 # Improve Prompt
@@ -58,6 +58,17 @@ Take a raw, ugly prompt, rewrite it into a sharp one **in the context of this pr
   prompt isn't a wrong one made fluent.
 - Never invent file paths or APIs in the rewrite. Anchors must be ones you
   verified in step 2.
+
+## Review mode
+
+Run this section instead of Steps 1-6 when the user says "/prompt-improve review", "review my prompt log" or "tune prompt-improve".
+
+1. Run `bash ~/.claude/skills/prompt-improve/stats.sh`.
+2. Read the output. Note the `since last review` count.
+3. If the expansion ratio exceeds 2.5x, treat it as over-expansion.
+4. Skim the recent notes for a repeated weakness.
+5. Read [review.md](review.md) and follow it exactly.
+6. If stats and notes show nothing wrong, append the marker and change nothing.
 
 ## Getting better over time
 
