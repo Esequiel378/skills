@@ -8,7 +8,6 @@ Each skill is a self-contained folder under [`skills/`](./skills) with a `SKILL.
 
 | Skill | What it does |
 | --- | --- |
-| [`architecture-hexagonal`](./skills/architecture-hexagonal/SKILL.md) | Authoring/reviewing Go or Python service code in ports-and-adapters style — use cases, driven ports, driving adapters, stage-fit and promotion decisions. |
 | [`architecture-improve`](./skills/architecture-improve/SKILL.md) | Scans a codebase (weighted to recent git hot spots) for shallow modules worth deepening, renders the candidates as a visual HTML report with before/after diagrams, then grills through the one you pick via `plan-grill`. Manual-only (`/architecture-improve`). Adapted from Matt Pocock's [`improve-codebase-architecture`](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md). |
 | [`architecture-review`](./skills/architecture-review/SKILL.md) | Blunt principal-architect review of an architecture doc / RFC — severity-tagged findings across 7 dimensions and a stage-fit verdict. |
 | [`batch-orchestrate`](./skills/batch-orchestrate/SKILL.md) | Lead skill for a batch of tickets — groups them into lanes, routes a model per ticket, dispatches one worker per ticket in its own worktree, verifies each, then merges every lane (Orca, at home, Claude or Codex workers) or opens stacked PRs (Workflow, at work). Replaces Tickforge's `/batch-run`. |
