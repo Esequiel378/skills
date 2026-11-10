@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # bumping this tag upgrades the media MCP on the next launch
-ARRSTACK_MCP_REF="v0.2.0-esequiel.1"
+ARRSTACK_MCP_REF="v0.2.1-esequiel.1"
 
 ENV_FILE=/run/ws-secrets/media.env
 SECRETS_FILE="${ZX_SERVER_DIR:-$HOME/Projects/personal/nix-server}/secrets/secrets.yaml"

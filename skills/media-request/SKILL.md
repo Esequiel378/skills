@@ -22,15 +22,18 @@ Good: `Requested *Dune: Part Two* (2024) in 1080p. Radarr is searching.`
    - If the user asks for status ("is <title> ready", "how's <title> going") or a delete, check the library first.
    - Run `radarr_list_movies` and `sonarr_list_series`. If exactly one item matches the title, use it. Skip steps 2 and 3.
 2. **Search.** Run `seerr_search` with the title.
-   - Write each space in the term as `%20`. The tool rejects raw spaces with HTTP 400.
-   - Percent-encode punctuation such as `:` and `'` the same way.
-   - Each result shows the title, year, `tmdbId` and `type` (`movie` or `tv`).
+   - Each result shows the title, year, `tmdbId`, `type` (`movie` or `tv`), and `status` — Seerr's `mediaInfo.status` (1 unknown, 2 pending, 3 processing, 4 partially available, 5 available), or `not requested`.
 3. **Disambiguate.**
    - If exactly one result has the same title and, when the user gave a year, the same year, go ahead without asking.
    - Otherwise show up to 3 lines: `Title (year), movie|show, one-line overview`. Ask which one. Block on the answer.
    - Never guess between a movie and a show that share a title.
 4. **Check the library.**
-   - For a movie, run `radarr_list_movies`. Match on title and year.
+   - Use the matched result's `status` first:
+     - `5` (available): say "Already in Jellyfin". Stop.
+     - `4` (partially available, show only): fall through to the episode-file check below to name the seasons present.
+     - `2` or `3` (pending/processing): go to step 7.
+     - `not requested` or `1` (unknown): fall through to the Radarr/Sonarr check below — the status field can be stale or the item may already sit in the library outside of Seerr.
+   - Fallback — for a movie, run `radarr_list_movies`. Match on title and year.
    - For a show, run `sonarr_list_series`. Match on title and year.
    - If the movie has a file (✅), or the show has every episode, say "Already in Jellyfin". Stop.
    - If the show has some episodes, run `sonarr_list_episode_files` for the series. Name the seasons present. Offer the missing seasons.
