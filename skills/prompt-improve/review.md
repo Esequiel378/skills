@@ -21,7 +21,7 @@ This is the "get better over time" loop — run it whenever you see fit.
    rewrite.
 
 4. Apply it, append `## Reviewed up to <date> — <one-line summary>` to the
-   Review log below, and commit titled `prompt-improve: tune`.
+   Review log below, and commit titled `chore(prompt-improve): tune rewrites`.
 
 Keep it lazy: one good improvement per session beats a redesign. If the log
 shows nothing wrong, append the marker and change nothing.
