@@ -47,7 +47,7 @@ Symlinks each skill into `~/.claude/skills/` (Claude Code) and `~/.agents/skills
 make install          # or: ./scripts/link-skills.sh
 ```
 
-Safe to re-run. It also prunes symlinks left behind by renamed or deleted skills, and migrates any `~/.claude/` data directory whose skill was renamed — so pulling and running `make install` is all another machine needs. Third-party plugins this setup depends on (currently `healthcare@healthcare`) are installed by the same command when `claude` is on `PATH`. It also installs or upgrades [graphify](https://github.com/Graphify-Labs/graphify) with `uv` and refreshes its skill for both CLIs. To keep a repo's graph current, run `graphify hook install` once in that repo.
+Safe to re-run. It also prunes symlinks left behind by renamed or deleted skills, and migrates any `~/.claude/` data directory whose skill was renamed — so pulling and running `make install` is all another machine needs. It also installs or upgrades [graphify](https://github.com/Graphify-Labs/graphify) with `uv` and refreshes its skill for both CLIs. To keep a repo's graph current, run `graphify hook install` once in that repo.
 
 ### As a Claude Code plugin
 
