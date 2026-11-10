@@ -10,9 +10,10 @@ work itself — it *sequences* the repo's other skills into a gated pipeline. Th
 end state is a described PR, staged and ready, waiting only on the user's
 go-ahead to open.
 
-Chains: [ticket-write](../ticket-write/SKILL.md) → [tdd](../tdd/SKILL.md) →
-[pr-review](../pr-review/SKILL.md) → [commit-write](../commit-write/SKILL.md) →
-[pr-describe](../pr-describe/SKILL.md).
+Chains: [ticket-write](../ticket-write/SKILL.md) →
+[bug-diagnose](../bug-diagnose/SKILL.md) → [tdd](../tdd/SKILL.md) →
+[pr-review](../pr-review/SKILL.md) → [work-verify](../work-verify/SKILL.md) →
+[commit-write](../commit-write/SKILL.md) → [pr-describe](../pr-describe/SKILL.md).
 
 ## The one rule: no blind starts
 
@@ -50,6 +51,13 @@ question is answered.
 
 ### 1. Implement — TDD
 
+If the ticket is a bug (batch-orchestrate's `kind: fix`), run
+[bug-diagnose](../bug-diagnose/SKILL.md) before tdd.
+Carry its regression test into tdd as the first test.
+If bug-diagnose already applied the fix, that test is green.
+Then write the remaining criteria's tests red-first.
+If bug-diagnose documented no seam, write tdd's first red test yourself.
+
 Run [tdd](../tdd/SKILL.md) on the ticket: red-green-refactor, one acceptance
 criterion at a time. Don't skip the failing-test-first step.
 
@@ -72,6 +80,11 @@ question resurfacing, not a fix. Stop and ask.
 
 Exit this stage when pr-review reports nothing material, or when it surfaces a
 judgment call — pause and ask rather than looping on a subjective point.
+
+### Before 4. Verify — work-verify
+
+Run [work-verify](../work-verify/SKILL.md) before stage 4.
+Read its output before you commit.
 
 ### 4. PR — commit, describe, then stage
 
@@ -104,6 +117,8 @@ These overrides replace the stages above:
 - **Stage 0:** the ticket is settled. Don't run ticket-write. Don't create a branch or worktree. The spec names them.
 - **Questions:** if the spec gives an `ask` command, ask there. Otherwise take the ticket's default, or the most conservative option.
 - Record every choice the ticket didn't settle under "Decisions taken" in the PR body.
+- **Stage 1:** if the ticket is a bug, still run bug-diagnose before tdd.
+- **Before stage 4:** still run work-verify.
 - **Stages 2-3:** if the spec says the caller reviews, skip them.
 - **Stage 4:** commit. Write the PR title and body to a file outside the repo. Never push. Never open a PR.
 - Report as the spec's Report section says.
