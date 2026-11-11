@@ -116,6 +116,8 @@ Run's inbox until you check it. A lead that isn't waiting on the inbox hears not
 - After step 4, run `orca orchestration worker-release --dispatch <dispatch id> --json`,
   then ack the batch with `check --ack <delivery id>`. Never use `orca terminal close`
   on a supervised worker.
+- Start a worker only with `worker-start`. Never use `orca agent launch` for a worker.
+  A launched session has no `ask` channel, so its questions go to the user, not to you.
 - Stop or release only Dispatches you started.
 
 ## 4. Verify before believing
