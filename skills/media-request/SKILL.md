@@ -43,7 +43,7 @@ Good: `Requested *Dune: Part Two* (2024) in 1080p. Radarr is searching.`
    - If the user named seasons, use them.
    - Otherwise ask: "All N seasons, or just S1?" Block on the answer.
    - Add a size hint to the question. Use the season count you know and say "about".
-   - Size arithmetic: ~3 GB per episode, ~12 GB per movie, 500 GB quota.
+   - Size arithmetic: ~3 GB per episode, ~12 GB per movie. There is no quota: the library sits on the 6 TB `/bulk` disk on zx, and an alert fires above 85% full.
    - If the show is in Sonarr, take the counts from `sonarr_get_series`.
    - Add current usage when it is cheap: sum the GB column of `radarr_list_movies` and `sonarr_list_series`. Otherwise omit it.
 6. **Request.**
