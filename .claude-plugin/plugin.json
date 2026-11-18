@@ -23,6 +23,7 @@
     "./skills/prototype-build",
     "./skills/release-scaffold",
     "./skills/retro",
+    "./skills/rfc-review",
     "./skills/spec-write",
     "./skills/sql-review",
     "./skills/tdd",
