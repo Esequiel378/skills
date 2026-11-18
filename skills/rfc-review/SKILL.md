@@ -63,7 +63,9 @@ coverage list in the report, in one line.
    requirement nobody stated? Does phase 1 deliver value if phase 2 never ships?
 4. **Alternatives.** Is "do nothing" there? Is the boring option there: the
    existing system, a vendor, a cron job, a manual process? Is each alternative
-   argued at its strongest, or set up to lose?
+   argued at its strongest, or set up to lose? Does a generic piece in the
+   codebase already do this? Did an earlier version get tried and replaced, and
+   does the doc say why?
 5. **Assumptions.** Which claims does the design depend on that the doc never
    states? Which stated ones are verified, and how? What is the cheapest test
    for each unverified one?
@@ -93,7 +95,12 @@ coverage list in the report, in one line.
     What blocks what?
 14. **Verification.** How will the team prove it works before launch? What can
     only be tested in production, and what limits the damage there?
-15. **Consistency and clarity.** Do sections contradict each other? Does a term
+15. **Decision-readiness.** Do the decision and the approval ask sit on the
+    first screen? Does each open question name who must answer it? Does each
+    rejected alternative say why it was rejected? Does the doc rate its
+    confidence in its own numbers? The strongest docs reviewed to build this
+    skill all did.
+16. **Consistency and clarity.** Do sections contradict each other? Does a term
     carry two meanings? Does the diagram match the text? Do the numbers agree
     across sections? Is an "open question" or "TBD" something the rest of the
     design depends on?
@@ -119,6 +126,35 @@ the doc does not answer.
 - Permission boundaries: another tenant, a revoked user, a deactivated account.
 - Quotas, rate limits, and payload size limits, ours and the vendor's.
 - A user or caller acting in bad faith.
+
+### Persona lenses
+
+Three more lenses read the same doc. Each is modelled on a reviewer whose
+comments on real RFCs caught what lenses 1-16 tend to miss.
+
+| Key | Lens | Catches |
+| --- | --- | --- |
+| `jz` | [rfc-review-jz](../rfc-review-jz/SKILL.md) | mechanism described wrong, an existing primitive, what is hard to reverse |
+| `bz` | [rfc-review-bz](../rfc-review-bz/SKILL.md) | reasoning left off the page, the permission model, unneeded new infra |
+| `ac` | [rfc-review-ac](../rfc-review-ac/SKILL.md) | missing requirements and evaluation criteria, unowned infra, reuse |
+
+- Dispatch the three as parallel subagents in one message.
+- Dispatch them before you start lens 1, so they run while you read.
+- Give each the doc, the linked docs from step 0, and the existing comments.
+- Tell each to skip points the existing comments already raise.
+- Dispatch each on Sonnet at medium effort, per spec-write's
+  [routing table](../spec-write/SKILL.md#model-routing).
+- Merge their findings with yours before step 3.
+- Tag each finding with the lens that found it.
+- If two lenses found the same point, keep one finding and name both lenses.
+
+Persona findings go through step 3 like any other. Their voice does not carry
+into the report. The report uses the voice in step 5. A persona's own voice
+applies only when the user runs that persona skill directly.
+
+`--lenses=<keys>` restricts the run. `core` is lenses 1-16. `persona` expands
+to `jz`, `bz`, `ac`. Keys mix freely, and the union runs. If a key does not
+match, stop and name it. Never drop it silently.
 
 ## 3. Verify each finding
 
@@ -250,7 +286,7 @@ Descope:
 Not for posting
 
 ### Coverage
-- <lens>: <n findings | read, nothing to raise | not applicable, with reason>
+- <lens or persona key>: <n findings | read, nothing to raise | not applicable, with reason>
 
 ### Left out
 - <dropped finding or unreachable link>: <reason>
